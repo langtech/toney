@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<pool>
+  <dir path="/h/work/prosody/data/sb066/voice">
+    <file name="10-1.wav" frmid="10" label="abáama"/>
+    <file name="10-2.wav" frmid="10" label="abáama"/>
+    <file name="11-1.wav" frmid="11" label="aabaúmá"/>
+    <file name="11-2.wav" frmid="11" label="aabaúmá"/>
+    <file name="148-1.wav" frmid="148" label="abôma"/>
+    <file name="148-2.wav" frmid="148" label="abôma"/>
+    <file name="158-1.wav" frmid="158" label="abumá"/>
+    <file name="159-1.wav" frmid="159" label="ábuma"/>
+    <file name="160-1.wav" frmid="160" label="ábûmma"/>
+    <file name="19-1.wav" frmid="19" label="áábêma"/>
+    <file name="20-1.wav" frmid="20" label="abémá"/>
+    <file name="21-1.wav" frmid="21" label="áábêmma"/>
+    <file name="21-2.wav" frmid="21" label="áábêmma"/>
+    <file name="226-1.wav" frmid="226" label="aítôma"/>
+    <file name="318-1.wav" frmid="318" label="ámû'a"/>
+    <file name="318-2.wav" frmid="318" label="ámû'a"/>
+    <file name="318-3.wav" frmid="318" label="ámû'a"/>
+    <file name="319-1.wav" frmid="319" label="amu'á"/>
+    <file name="319-2.wav" frmid="319" label="amu'á"/>
+    <file name="346-1.wav" frmid="346" label="ánama"/>
+    <file name="346-2.wav" frmid="346" label="ánama"/>
+    <file name="347-1.wav" frmid="347" label="anamá"/>
+    <file name="358-1.wav" frmid="358" label="ánêma"/>
+    <file name="358-2.wav" frmid="358" label="ánêma"/>
+    <file name="391-1.wav" frmid="391" label="ápêkima"/>
+    <file name="391-2.wav" frmid="391" label="ápêkima"/>
+    <file name="415-1.wav" frmid="415" label="a'tómá"/>
+    <file name="416-1.wav" frmid="416" label="a'tumá"/>
+    <file name="416-2.wav" frmid="416" label="a'tumá"/>
+    <file name="423-1.wav" frmid="423" label="araamá"/>
+    <file name="424-1.wav" frmid="424" label="arááma"/>
+    <file name="48-1.wav" frmid="48" label="áaka'a"/>
+    <file name="49-1.wav" frmid="49" label="aaka'á"/>
+    <file name="50-1.wav" frmid="50" label="aáka'a"/>
+    <file name="50-2.wav" frmid="50" label="aáka'a"/>
+    <file name="54-1.wav" frmid="54" label="aamá"/>
+    <file name="54-2.wav" frmid="54" label="aamá"/>
+    <file name="55-1.wav" frmid="55" label="áama"/>
+    <file name="56-1.wav" frmid="56" label="aáma"/>
+  </dir>
+</pool>
