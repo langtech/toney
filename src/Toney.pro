@@ -7,7 +7,7 @@
 QT       += core gui xml multimedia
 CONFIG   += static
 
-TARGET = Tones
+TARGET = Toney
 TEMPLATE = app
 
 
@@ -26,7 +26,11 @@ SOURCES += main.cpp\
     listplayer.cpp \
     player.cpp \
     f0contour.cpp \
-    f0display.cpp
+    f0display.cpp \
+    get_f0/sigproc.c \
+    get_f0/get_f0.c \
+    get_f0/get_cands.c \
+    get_f0/dp_f0.c
 
 HEADERS  += mainwindow.h \
     cluster.h \
@@ -44,15 +48,17 @@ HEADERS  += mainwindow.h \
     config.h \
     player.h \
     f0contour.h \
-    f0display.h
+    f0display.h \
+    get_f0/get_f0.h \
+    get_f0/f0.h \
+    get_f0/f0_structs.h
 
 FORMS    += mainwindow.ui \
     cluster.ui \
     clusterbox.ui
 
 unix {
-    LIBS += -lsndfile -L../../get_f0 -lgetf0
-    INCLUDEPATH += ../../get_f0
+    LIBS += -lsndfile
     SOURCES += soxplayer.cpp
     HEADERS += soxplayer.h
     DEFINES += SOXPLAYER
@@ -71,14 +77,6 @@ win32 {
     SOURCES += qtplayer.cpp
     HEADERS += qtplayer.h
     DEFINES += QTPLAYER
-    SOURCES += \
-        ../../get_f0/get_f0.c \
-        ../../get_f0/dp_f0.c \
-        ../../get_f0/get_cands.c \
-        ../../get_f0/sigproc.c
-    HEADERS += \
-        ../../get_f0/f0.h \
-        ../../get_f0/f0_structs.h
 }
 
 RESOURCES +=

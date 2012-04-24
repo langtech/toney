@@ -4,7 +4,7 @@
 #include <QtGui>
 #include <annotation.h>
 extern "C" {
-    #include <f0.h>
+    #include <get_f0/f0.h>
 }
 
 class F0Contour : public QGraphicsPathItem
