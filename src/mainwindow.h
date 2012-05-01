@@ -6,6 +6,7 @@
 #include "pool.h"
 #include "config.h"
 #include "cluster.h"
+#include "helpdialog.h"
 
 namespace Ui {
     class MainWindow;
@@ -29,6 +30,7 @@ public slots:
     void on_action_Show_Speaker_ID_toggled(bool);
     void on_action_Resize_Column_Width_triggered();
     void on_action_Playback_Delay_toggled(bool);
+    void on_action_help_triggered(bool);
 
 private slots:
     void removeCluster(Cluster *cluster);
@@ -41,6 +43,7 @@ private:
     Ui::MainWindow *ui;
     Config _config;
     QHash<QString,AnnotationSet*> _pools; // set of loaded annotation files
+    HelpDialog _help;
 
     void _set_audio_path(AnnotationSet *pool, const QString &audio_path);
     void _show_save_error(const QString &filename);

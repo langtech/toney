@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.8.1: http://docutils.sourceforge.net/" />
+<title>File Format</title>
+<link rel="stylesheet" href="html4css1.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="file-format">
+<h1 class="title">File Format</h1>
+
+<p>Toney works with the Praat TextGrid format.  It requires a &quot;target&quot; tier, and optionally uses
+&quot;frame&quot; and &quot;speaker&quot; tiers.  Examples of the file format are available for download.
+The target tier contains transcriptions of the tokens of interest.
+Transcriptions consist of a segmental component and a category (&quot;X&quot; for unknown), separated by colon.
+Toney only considers the labels that contain this colon; other labels are ignored.</p>
+<p>For example, a target tier might contain the following sequence of word labels: <tt class="docutils literal">muta paroma:X kidenu</tt>.
+In this case, only the second item <tt class="docutils literal">paroma</tt> would be displayed.  If the user created a
+class called LMH (low-mid-high), then the TextGrid file would be modified to contain
+<tt class="docutils literal">muta paroma:LMH kidenu</tt>.</p>
+<p>As another example, a target tier might contain the following sequence of syllable labels: <tt class="docutils literal">mu ta pa:L ro:X ma:H ki de nu</tt>.
+In this case, only the sylables <tt class="docutils literal">pa</tt>, <tt class="docutils literal">ro</tt>, and <tt class="docutils literal">ma</tt> would be displayed.
+Two categories <tt class="docutils literal">L</tt> and <tt class="docutils literal">H</tt> would be populated with <tt class="docutils literal">pa</tt> and <tt class="docutils literal">ma</tt> respectively.
+However, <tt class="docutils literal">ro</tt> would be displayed without any category.  If the user created a new <tt class="docutils literal">M</tt> category,
+and moved all three syllables into this category, then the TextGrid file would be
+modified to contain <tt class="docutils literal">mu ta pa:M ro:M ma:M ki de nu</tt>.</p>
+<p>The optional frame tier is used to delimit a larger span of recorded material that contains the
+(sentence) frame in which the target form was elicited (e.g. <tt class="docutils literal">F1</tt> for Frame 1).
+The optional frame tier is used to provide a speaker identifier, such as initials (e.g. <tt class="docutils literal">PT</tt>).
+The <tt class="docutils literal">View</tt> menu can be used to toggle the display of this extra information.
+Thus, a token <tt class="docutils literal">paroma</tt> could appear as <tt class="docutils literal"><span class="pre">paroma-F1-PT</span></tt> in the display,
+enabling the user to study variability due to the elicitation frame or the speaker.</p>
+</div>
+</body>
+</html>

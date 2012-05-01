@@ -4,8 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml multimedia
-CONFIG   += static
+QT       += core gui xml multimedia webkit
+CONFIG   += static help
 
 TARGET = Toney
 TEMPLATE = app
@@ -30,7 +30,9 @@ SOURCES += main.cpp\
     get_f0/sigproc.c \
     get_f0/get_f0.c \
     get_f0/get_cands.c \
-    get_f0/dp_f0.c
+    get_f0/dp_f0.c \
+    helpdialog.cpp \
+    helpbrowser.cpp
 
 HEADERS  += mainwindow.h \
     cluster.h \
@@ -51,11 +53,14 @@ HEADERS  += mainwindow.h \
     f0display.h \
     get_f0/get_f0.h \
     get_f0/f0.h \
-    get_f0/f0_structs.h
+    get_f0/f0_structs.h \
+    helpdialog.h \
+    helpbrowser.h
 
 FORMS    += mainwindow.ui \
     cluster.ui \
-    clusterbox.ui
+    clusterbox.ui \
+    helpdialog.ui
 
 unix {
     LIBS += -lsndfile

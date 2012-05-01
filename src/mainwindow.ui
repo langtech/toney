@@ -38,8 +38,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>798</width>
-          <height>82</height>
+          <width>796</width>
+          <height>71</height>
          </rect>
         </property>
         <property name="mouseTracking">
@@ -58,7 +58,7 @@
      <x>0</x>
      <y>0</y>
      <width>818</width>
-     <height>29</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -87,9 +87,16 @@
     <addaction name="action_Resize_Column_Width"/>
     <addaction name="action_Playback_Delay"/>
    </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="action_help"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menu_Edit"/>
    <addaction name="menu_View"/>
+   <addaction name="menu_Help"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -112,7 +119,7 @@
   </action>
   <action name="action_Add_cluster">
    <property name="text">
-    <string>&amp;Add cluster</string>
+    <string>&amp;Add Cluster</string>
    </property>
   </action>
   <action name="action_Save">
@@ -158,6 +165,11 @@
   <action name="action_Resize_Column_Width">
    <property name="text">
     <string>Fit Column &amp;Width</string>
+   </property>
+  </action>
+  <action name="action_help">
+   <property name="text">
+    <string>User Documentation</string>
    </property>
   </action>
  </widget>

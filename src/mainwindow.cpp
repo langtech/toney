@@ -95,6 +95,11 @@ void MainWindow::on_action_Playback_Delay_toggled(bool v)
     ui->scrollAreaWidgetContents->setConfig(_config);
 }
 
+void MainWindow::on_action_help_triggered(bool v)
+{
+    _help.show();
+}
+
 void MainWindow::removeCluster(Cluster *cluster)
 {
     QString s("Do you really want to remove this column?\n\n[%1]");
