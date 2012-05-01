@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QtHelpProject version="1.0">
+  <namespace>prosodicsystems.toney.0.4</namespace>
+  <virtualFolder>doc</virtualFolder>
+  <customFilter name="Toney 0.4">
+    <filterAttribute>toney</filterAttribute>
+    <filterAttribute>0.4</filterAttribute>
+  </customFilter>
+  <filterSection>
+    <filterAttribute>toney</filterAttribute>
+    <filterAttribute>0.4</filterAttribute>
+    <toc>
+      <section title="Toney User Manual" ref="index.html">
+	<section title="File Format" ref="file_format.html"/>
+	<section title="User Interface" ref="user_interface.html"/>
+	<section title="License" ref="license.html"/>
+      </section>
+    </toc>
+    <keywords>
+      <keyword name="format" id="Toney::format" ref="file_format.html"/>
+    </keywords>
+    <files>
+      <file>*.html</file>
+      <file>*.css</file>
+    </files>
+  </filterSection>
+ </QtHelpProject>
