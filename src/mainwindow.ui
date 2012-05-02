@@ -14,7 +14,7 @@
    <bool>false</bool>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Toney</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="mouseTracking">

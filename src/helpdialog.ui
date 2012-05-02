@@ -14,7 +14,7 @@
    <bool>false</bool>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Toney User Documents</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
