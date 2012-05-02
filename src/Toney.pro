@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml multimedia webkit
+QT       += core gui xml multimedia
 CONFIG   += static help
 
 TARGET = Toney
