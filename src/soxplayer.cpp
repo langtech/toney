@@ -1,4 +1,6 @@
 #include "soxplayer.h"
+#include <QCoreApplication>
+#include <QDir>
 #include <QDebug>
 
 SoxPlayer::SoxPlayer(QObject *parent):
@@ -21,7 +23,8 @@ void SoxPlayer::play(const QString &path, double start, double end)
     _path = path;
     _start = start;
     _end = end;
-    _cmd = QString("play %1 trim %2 =%3 fade 0.05 0 0.05").arg(path).arg(start).arg(end);
+    _cmd = QCoreApplication::applicationDirPath() + QDir::separator() +
+           QString("play %1 trim %2 =%3 fade 0.05 0 0.05").arg(path).arg(start).arg(end);
     _proc.start(_cmd, QIODevice::NotOpen);
 }
 
