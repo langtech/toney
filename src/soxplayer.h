@@ -21,9 +21,13 @@ private slots:
     void _finished_playing(QProcess::ProcessState);
 
 private:
+    void _find_play_command();
+
+private:
     QString _cmd;
     QProcess _proc;
     QString _path;
+    QString _play; // play command
     double _start;
     double _end;
 
