@@ -7,7 +7,8 @@ F0Display::F0Display(QWidget *parent) :
 {
     setScene(&_scene);
     setAlignment(Qt::AlignBottom | Qt::AlignLeft);
-    _scene.addLine(0,0,290,0);
+    QPen pen(Qt::transparent);
+    _scene.addLine(0,0,290,0, pen);
 }
 
 F0Display::~F0Display()
