@@ -7,8 +7,7 @@ F0Display::F0Display(QWidget *parent) :
 {
     setScene(&_scene);
     setAlignment(Qt::AlignBottom | Qt::AlignLeft);
-    QPen pen(Qt::white);  // Qt::transparent caused problem
-                          // --> some contours were hidden
+    QPen pen(Qt::transparent);
     _scene.addLine(0,0,290,0, pen);
 }
 
