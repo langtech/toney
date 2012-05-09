@@ -210,12 +210,10 @@ void F0Contour::_redraw()
     QPainterPath path;
     const float *data = _ann.getF0();
     if (data) {
-        path.moveTo(0, -data[0]);
         for (int i=1; i < 30; ++i) {
             if (data[i] > 0.0 && data[i-1] > 0.0) {
                 path.moveTo((i-1)*10, -data[i-1]);
                 path.lineTo(i*10, -data[i]);
-                path.moveTo(i*10, -data[i]); // close the path
             }
         }
     }
