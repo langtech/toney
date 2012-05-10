@@ -171,9 +171,6 @@ int get_f0(const char *filename,
         return 1;
     }
 
-    buff_size;
-    sdstep;
-
     if (init_dp_f0(session, (double) sfinfo.samplerate, &buff_size, &sdstep) != 0) {
         sf_close(sndfile);
         return 1;

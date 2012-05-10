@@ -97,6 +97,7 @@ void MainWindow::on_action_Playback_Delay_toggled(bool v)
 
 void MainWindow::on_action_help_triggered(bool v)
 {
+    Q_UNUSED(v);
     _help.show();
 }
 
