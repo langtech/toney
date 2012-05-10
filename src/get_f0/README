@@ -1,0 +1,12 @@
+This directory contains modified code that is originally from ESPS. A version
+of ESPS source code is available from the following web site.
+
+  http://ldc.upenn.edu/myl/esps60.6.linmac.src.tgz
+
+ESPS was originally developed by Entropic Inc., which was later acquired by
+Microsoft in 1999.  Eventually, the source code was released under the BSD
+license by KTH.
+
+  http://www.speech.kth.se/esps/esps.zip
+
+
