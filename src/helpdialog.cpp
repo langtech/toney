@@ -4,9 +4,8 @@
 HelpDialog::HelpDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::HelpDialog),
-    _help_engine(QCoreApplication::applicationDirPath() +
-                 QDir::separator() +
-                 "toney.qhc")
+    _help_engine(QDir(QCoreApplication::applicationDirPath())
+                 .absoluteFilePath("toney.qhc"))
 {
     ui->setupUi(this);
     _help_engine.registeredDocumentations();  // this does a magic
