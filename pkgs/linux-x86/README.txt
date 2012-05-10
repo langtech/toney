@@ -3,7 +3,12 @@ To start the tool, run the Toney.sh program.
 This version requires an external program for playing audio: play. This is a
 command line utility that comes with sox [1]. Install sox and make sure that
 the play command is available, i.e. make sure that it exists under /usr/bin or
-/usr/local/bin directory.
+/usr/local/bin directory.  If the play command is in a non-conventional
+location, you can specify where it is by creating .toney file in your home
+directory, e.g.
+
+  # the space is a tab
+  SOX_PLAY_PATH	/my/personal/directory
 
 We noticed that on some systems the first part of sound is chopped off
 depending on the audio system that the OS is using. A solution we found was to
