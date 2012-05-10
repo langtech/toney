@@ -59,8 +59,7 @@ void SoxPlayer::_find_play_command()
     search_paths.append(cf.getAsList("SOX_PLAY_PATH"));
 
     // directory containing the executable
-    search_paths.append(QCoreApplication::applicationDirPath() +
-                        QDir::separator() + "play");
+    search_paths.append(QCoreApplication::applicationDirPath());
 
     // from PATH variable
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
