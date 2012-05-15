@@ -1,10 +1,7 @@
 License
 -------
 
-Toney is a software tool that supports classification of utterance tokens
-into phonetic categories.
-
-Copyright (C) 2012  <name of author>
+Copyright (C) 2012 Linguistic Data Consortium
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
