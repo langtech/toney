@@ -1,6 +1,6 @@
 QHELPGENERATOR = /h/QtSDK/Desktop/Qt/4.8.1/gcc/bin/qhelpgenerator
 QCOLLECTIONGEN = /h/QtSDK/Desktop/Qt/4.8.1/gcc/bin/qcollectiongenerator
-RST = index.rst file_format.rst user_interface.rst license.rst
+RST = index.rst file_format.rst user_interface.rst license.rst credits.rst
 CSS = html4css1.css
 
 toney.qhc: toney.qhcp toney.qch
