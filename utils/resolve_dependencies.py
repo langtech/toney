@@ -19,8 +19,10 @@ Usage:
   $ cp -r <path_to_qt>/plugins/<needed_plugin> MyApp.app/Contents/MacOS/plugins
   $ cp -r <path_to_qt>/plugins/<other_plugin> MyApp.app/Contents/MacOS/plugins
   ...
-  $ prep_app.py MyApp.app | bash
+  $ prep_app.py MyApp.app [app name] | bash
 
+  If [app name] is missing the app directory name is used to get the app name,
+  e.g. if app dir is MyApp.app, then app name becomes "MyApp".
 """
 
 import sys
@@ -31,7 +33,11 @@ APPDIR = sys.argv[1]  # the app directory
 FRMDIR = os.path.join(APPDIR, 'Contents/Frameworks')
 RESDIR = os.path.join(APPDIR, 'Contents/Resources')
 PLUGINDIR = os.path.join(APPDIR, 'Contents/MacOS/plugins')
-PROG = os.path.join(APPDIR, 'Contents/MacOS/Toney')
+PROG = os.path.join(APPDIR, 'Contents/MacOS/')
+if len(sys.argv) > 2:
+    PROG = os.path.join(APPDIR, 'Contents/MacOS', sys.argv[2])
+else:
+    PROG = os.path.join(APPDIR, 'Contents/MacOS', sys.argv[1].split('.')[0])
 
 
 def qt_framework_dir(libpath):
@@ -115,7 +121,7 @@ if os.path.isdir(PLUGINDIR):
             for x, newpath in dep.items():
                 print "install_name_tool -change %s %s %s" % (x, newpath, path)
 
-            p = dirpath.split('/plugins/')[1]
+            p = path.split('/plugins/')[1]
             newpath = "@executable_path/plugins/" + p
             print "install_name_tool -id %s %s" % (newpath, path)
             
