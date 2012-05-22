@@ -31,6 +31,7 @@ public slots:
     void on_action_Resize_Column_Width_triggered();
     void on_action_Playback_Delay_toggled(bool);
     void on_action_help_triggered(bool);
+    void on_volumeSlider_valueChanged(int);
 
 private slots:
     void removeCluster(Cluster *cluster);

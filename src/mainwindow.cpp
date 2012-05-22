@@ -101,6 +101,11 @@ void MainWindow::on_action_help_triggered(bool v)
     _help.show();
 }
 
+void MainWindow::on_volumeSlider_valueChanged(int v)
+{
+    Player::setVolumeLevel(v);
+}
+
 void MainWindow::removeCluster(Cluster *cluster)
 {
     QString s("Do you really want to remove this column?\n\n[%1]");

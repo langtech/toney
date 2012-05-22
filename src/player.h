@@ -10,12 +10,15 @@ public:
     explicit Player(QObject *parent = 0);
     virtual void play(const QString& path, double start, double end) = 0;
     virtual void stop() = 0;
+    static void setVolumeLevel(int v) { _volume_level = v; }
 
 signals:
     void finishedPlaying(const QString &path, double start, double end);
 
 public slots:
 
+protected:
+    static int _volume_level;
 };
 
 #endif // PLAYER_H
