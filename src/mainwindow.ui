@@ -73,7 +73,10 @@
          <bool>false</bool>
         </property>
         <property name="numDigits">
-         <number>2</number>
+         <number>3</number>
+        </property>
+        <property name="digitCount">
+         <number>3</number>
         </property>
         <property name="segmentStyle">
          <enum>QLCDNumber::Flat</enum>
