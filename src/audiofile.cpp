@@ -3,7 +3,9 @@
 AudioFile::AudioFile(QObject *parent):
     QIODevice(parent),
     _sndfile(0),
-    _counter(0)
+    _counter(0),
+    _multiplier(1.0),
+    _empty_read(0)
 {
     QIODevice::open(QIODevice::ReadOnly);
 }
@@ -72,10 +74,27 @@ qint64 AudioFile::readData(char *data, qint64 maxlen)
     if (frames > _region_frames)
         frames = _region_frames;
 
-    sf_count_t n = sf_readf_short(_sndfile, (short*) data, frames);
-    _counter += n;
+    //short tmp[frames];
 
-    return n * sizeof(short) * _sfinfo.channels;
+    sf_count_t n = sf_readf_short(_sndfile, (short*) data, frames);
+
+    //for (int i=0; i < n * sizeof(short) * _sfinfo.channels; ++i) {
+    //    ((short*)data)[i] = _multiplier * tmp[i];
+    //}
+
+    if (n == 0) {
+        if (_empty_read++ > 0)
+            return -1;
+        else
+            return 0;
+    }
+    else {
+        _empty_read = 0;
+
+        _counter += n;
+
+        return n * sizeof(short) * _sfinfo.channels;
+    }
 }
 
 qint64 AudioFile::writeData(const char *data, qint64 len)
@@ -91,11 +110,6 @@ qint64 AudioFile::bytesAvailable() const
         return 0;
 
     return (_region_frames - _counter) * sizeof(short) * _sfinfo.channels;
-}
-
-void AudioFile::close()
-{
-    qDebug() << "close";
 }
 
 void AudioFile::setRegion(double start, double end)
