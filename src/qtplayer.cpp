@@ -52,7 +52,6 @@ void QtPlayer::stop()
 {
     if (_audio_out) {
         _audio_out->disconnect(this);
-        _audio_out->reset();
         _audio_out->stop();
         _af->close();
         delete _audio_out;
@@ -64,7 +63,7 @@ void QtPlayer::stop()
 
 void QtPlayer::_finished_playing(QAudio::State state)
 {
-    if (state == QAudio::IdleState) {
+    if (state == QAudio::IdleState || state == QAudio::StoppedState) {
         stop();
         emit finishedPlaying(_path, _start, _end);
     }
