@@ -31,7 +31,7 @@ void QtPlayer::play(const QString &path, double start, double end)
 
     _af->setRegion(start, end);
 
-    QAudioDeviceInfo info(QAudioDeviceInfo::defaultInputDevice());
+    QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
     if (!info.isFormatSupported(_af->format()))
         return;
 

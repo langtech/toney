@@ -64,7 +64,7 @@ qint64 AudioFile::readData(char *data, qint64 maxlen)
         return -1;
 
     if (_counter >= _region_frames)
-        return 0;
+        return _empty_read++ > 0 ? -1 : 0;
 
     if (maxlen <= 0)
         return 0;
@@ -83,10 +83,7 @@ qint64 AudioFile::readData(char *data, qint64 maxlen)
     //}
 
     if (n == 0) {
-        if (_empty_read++ > 0)
-            return -1;
-        else
-            return 0;
+        return _empty_read++ > 0 ? -1 : 0;
     }
     else {
         _empty_read = 0;
