@@ -9,7 +9,6 @@ QStringList Annotation::_speakers;
 QStringList Annotation::_tones;
 QHash<_annotation_t*,int> Annotation::_ref_counter;
 QString Annotation::_empty_string;
-PLAYER *Annotation::_player = 0;
 
 Annotation::Annotation():
     _ann(new _annotation_t)
@@ -55,11 +54,6 @@ Annotation::~Annotation()
         // this is the last instance; deallocate
         _ref_counter.remove(_ann);
         delete _ann;
-        if (_ref_counter.empty()) {
-            // last instance of any Annotation instance has just been removed
-            delete _player;
-            _player = 0;
-        }
     } else {
         // this is not the last one; decrease the counter
         _ref_counter.insert(_ann, _ref_counter.value(_ann) - 1);
@@ -287,16 +281,15 @@ void Annotation::playTarget(QAction *act)
         // audio region is not defined
         return;
 
-    if (_player == 0)
-        _player = new PLAYER;
+    Player *player = PLAYER::getInstance();
 
     if (act != 0) {
-        _player->disconnect(act);
-        act->connect(_player, SIGNAL(finishedPlaying(QString,double,double)),
+        player->disconnect(act);
+        act->connect(player, SIGNAL(finishedPlaying(QString,double,double)),
                      SLOT(trigger()));
     }
 
-    _player->play(getAudioPath(), _ann->start, _ann->end);
+    player->play(getAudioPath(), _ann->start, _ann->end);
 }
 
 void Annotation::playFrame()
@@ -305,10 +298,8 @@ void Annotation::playFrame()
         // audio region is not defined
         return;
 
-    if (_player == 0)
-        _player = new PLAYER;
-
-    _player->play(getAudioPath(), _ann->frm_start, _ann->frm_end);
+    PLAYER::getInstance()->play(
+                getAudioPath(), _ann->frm_start, _ann->frm_end);
 }
 
 bool Annotation::operator ==(const Annotation& ann) const

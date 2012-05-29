@@ -8,15 +8,19 @@
 class QtPlayer : public Player
 {
     Q_OBJECT
+
 public:
-    explicit QtPlayer(QObject *parent = 0);
-    ~QtPlayer();
+    static Player *getInstance(QObject *parent = 0);
 
 public slots:
     virtual void play(const QString& path, double start, double end);
     virtual void stop();
 
 signals:
+
+protected:
+    explicit QtPlayer(QObject *parent = 0);
+    ~QtPlayer();
 
 private slots:
     void _finished_playing(QAudio::State state);

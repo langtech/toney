@@ -34,7 +34,6 @@ private slots:
 private:
     Config _config;
     TargetList *_list;
-    PLAYER _player;
     STATE _state;
     int _idx;
     MODE _mode;

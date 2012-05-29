@@ -1,6 +1,13 @@
 #include "qtplayer.h"
 #include <sndfile.h>
 
+Player *Player::getInstance(QObject *parent)
+{
+    if (_instance == 0)
+        _instance = new QtPlayer(parent);
+    return _instance;
+}
+
 QtPlayer::QtPlayer(QObject *parent) :
     Player(parent),
     _audio_out(0),
@@ -10,7 +17,8 @@ QtPlayer::QtPlayer(QObject *parent) :
 
 QtPlayer::~QtPlayer()
 {
-
+    if (_instance != 0)
+        delete _instance;
 }
 
 void QtPlayer::play(const QString &path, double start, double end)
