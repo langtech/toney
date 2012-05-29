@@ -4,8 +4,7 @@
 AudioFile::AudioFile(QObject *parent):
     QIODevice(parent),
     _sndfile(0),
-    _counter(0),
-    _empty_read(0)
+    _counter(0)
 {
     QIODevice::open(QIODevice::ReadOnly);
 }
@@ -64,7 +63,14 @@ qint64 AudioFile::readData(char *data, qint64 maxlen)
         return -1;
 
     if (_counter >= _region_frames)
-        return _empty_read++ > 0 ? -1 : 0;
+#ifdef Q_WS_WIN
+        // This seems to be a Qt bug. The manual says this method returns -1
+        // if there's no more data to be read. However, if we do that,
+        // QAudioOutput doesn't change state to either Idle or Stopped.
+        return 0;
+#else
+        return -1;
+#endif
 
     if (maxlen <= 0)
         return 0;
@@ -94,16 +100,9 @@ qint64 AudioFile::readData(char *data, qint64 maxlen)
     for (int i=0; i < n * _sfinfo.channels; ++i)
         ((short*)data)[i] = round(multiplier * tmp[i]);
 
-    if (n == 0) {
-        return _empty_read++ > 0 ? -1 : 0;
-    }
-    else {
-        _empty_read = 0;
+    _counter += n;
 
-        _counter += n;
-
-        return n * sizeof(short) * _sfinfo.channels;
-    }
+    return n * sizeof(short) * _sfinfo.channels;
 }
 
 qint64 AudioFile::writeData(const char *data, qint64 len)

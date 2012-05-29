@@ -30,7 +30,6 @@ private:
     QString _last_error_msg;
     QAudioFormat _format;
     sf_count_t _region_frames;
-    int _empty_read;  // count attempts to read beyond eof
 };
 
 #endif // AUDIOFILE_H
