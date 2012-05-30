@@ -9,8 +9,7 @@ class QtPlayer : public Player
 {
     Q_OBJECT
 
-public:
-    static Player *getInstance(QObject *parent = 0);
+    friend class MainWindow;
 
 public slots:
     virtual void play(const QString& path, double start, double end);
@@ -31,6 +30,7 @@ private:
     QString _path;
     double _start;
     double _end;
+    QMutex _mutex;
 };
 
 #endif // QTPLAYER_H

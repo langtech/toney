@@ -281,7 +281,7 @@ void Annotation::playTarget(QAction *act)
         // audio region is not defined
         return;
 
-    Player *player = PLAYER::getInstance();
+    Player *player = Player::getInstance();
 
     if (act != 0) {
         player->disconnect(act);

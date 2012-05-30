@@ -20,7 +20,8 @@ public slots:
 
 protected:
     explicit Player(QObject *parent = 0);
-    virtual ~Player() {}
+    virtual ~Player();
+    static void registerInstance(Player *player);
 
 protected:
     static int _volume_level;

@@ -37,6 +37,7 @@ private:
     STATE _state;
     int _idx;
     MODE _mode;
+    Player *_player;
 };
 
 #endif // LISTPLAYER_H

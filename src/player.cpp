@@ -13,3 +13,12 @@ Player::Player(QObject *parent) :
     QObject(parent)
 {
 }
+
+Player::~Player()
+{
+}
+
+void Player::registerInstance(Player *player)
+{
+    _instance = player;
+}
