@@ -20,6 +20,66 @@ static void callback(
     }
 }
 
+static void linear_interpolation(QVector<float> &f0_samples, QVector<float> &output)
+{
+    static const float E = 0.000001;
+
+    int N = f0_samples.size();
+    int i = 0;
+
+    output.clear();
+
+    while (f0_samples.at(i) < E) {
+        output.push_back(f0_samples.at(i++));
+    }
+
+    while (i < N) {
+        if (f0_samples.at(i) < E) {
+            int x1 = i - 1;
+            int x2 = i + 1;
+            while (x2 < N && f0_samples.at(x2) < E) ++x2;
+            if (x2 < N) {
+                float v1 = f0_samples.at(x1);
+                float v2 = f0_samples.at(x2);
+                float w = x2 - x1;
+                while (i < x2) {
+                    float v = v1 + (v2 - v1) / w * (i++ - x1);
+                    output.push_back(v);
+                }
+            }
+            else {
+                while (i < N) {
+                    output.push_back(f0_samples.at(i++));
+                }
+            }
+        }
+        else {
+            output.push_back(f0_samples.at(i++));
+        }
+    }
+}
+
+static void smooth(QVector<float> &f0_samples, QVector<float> &output)
+{
+    static float B[4] = {0.002898195, 0.008694584, 0.008694584, 0.002898195};
+    static float A[4] = {1.0000000, -2.3740947, 1.9293557, -0.5320754};
+
+    QVector<float> input;
+
+    linear_interpolation(f0_samples, input);
+
+    output.clear();
+    for (int i=0; i < input.size(); ++i) {
+        float y = 0.0;
+        for (int k=0; k <= 3 && i-k>=0; ++k)
+            y += A[k] * input.at(i-k);
+        for (int k=0; k <= 3 && i-k>0; ++k)
+            y += B[k] * output.at(i-k-1);
+        output.push_back(y);
+        qDebug() << f0_samples.at(i) << input.at(i) << output.at(i);
+    }
+}
+
 static bool pitch_track(Annotation &ann, get_f0_session *session)
 {
     QString p = ann.getAudioPath();
@@ -41,7 +101,14 @@ static bool pitch_track(Annotation &ann, get_f0_session *session)
         end = fend;
 
     QVector<float> v;
+    QVector<float> f0_samples;
+    QVector<float> smoothed;
     get_f0(p.toUtf8().constData(), session, beg, end, callback, &v);
+    for (int i=0; i<v.size(); i+=2)
+        f0_samples.push_back(v.at(i));
+    smooth(f0_samples, smoothed);
+    for (int i=0; i<smoothed.size(); i+=2)
+        v[i*2] = smoothed.at(i);
 
     double t0 = ann.getTargetStart() - beg;
     double step = (ann.getTargetEnd() - ann.getTargetStart()) / 29.0;
