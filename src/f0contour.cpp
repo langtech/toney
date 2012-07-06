@@ -26,12 +26,14 @@ static void linear_interpolation(QVector<float> &f0_samples, QVector<float> &out
 
     int N = f0_samples.size();
     int i = 0;
+    float tmp_val;
 
     output.clear();
 
-    while (f0_samples.at(i) < E) {
-        output.push_back(f0_samples.at(i++));
-    }
+    while (f0_samples.at(i) < E) ++i;
+    tmp_val = f0_samples.at(i);
+    for (int k=0; k < i; ++k)
+        output.push_back(tmp_val);
 
     while (i < N) {
         if (f0_samples.at(i) < E) {
@@ -48,8 +50,9 @@ static void linear_interpolation(QVector<float> &f0_samples, QVector<float> &out
                 }
             }
             else {
-                while (i < N) {
-                    output.push_back(f0_samples.at(i++));
+                tmp_val = f0_samples.at(x1);
+                while (i++ < N) {
+                    output.push_back(tmp_val);
                 }
             }
         }
@@ -62,22 +65,33 @@ static void linear_interpolation(QVector<float> &f0_samples, QVector<float> &out
 static void filter(int order, float *b, float *a,
                    QVector<float> &input, QVector<float> &output)
 {
+    // order: order of the filter
+    // b: moving average coefficients (MA, applied to input)
+    // a: autoregressive coefficients (AR, applied to history)
+    // input: input vector
+    // output: output vector
+
     output.clear();
     for (int i=0; i < input.size(); ++i) {
         float y = 0.0;
-        for (int k=0; k <=order; ++k)
-            y += a[k] * input.value(i-k, 0.0) + b[k] * output.value(i-k-1, 0.0);
+        for (int k=0; k <= order; ++k)
+            y += b[k] * input.value(i-k, 0.0);
+        for (int k=1; k <= order; ++k) // a[0] is ignored
+            y -= a[k] * output.value(i-k, 0.0);
         output.push_back(y);
     }
 }
 
 static void smooth(QVector<float> &f0_samples, QVector<float> &output)
 {
+    // Coefficients returned by butter(3, 0.1) from R/SciPy/MATLAB
+    // B is moving average coefficients (MA)
+    // A is autoregressive coefficients (AR)
     static float B[4] = {0.002898195, 0.008694584, 0.008694584, 0.002898195};
     static float A[4] = {1.0000000, -2.3740947, 1.9293557, -0.5320754};
 
     QVector<float> input;
-    QVector<float> l;
+    QVector<float> l;  // for debugging; stores interpolated samples
 
     int N = f0_samples.size();
 
@@ -121,7 +135,7 @@ static bool pitch_track(Annotation &ann, get_f0_session *session)
     for (int i=0; i<v.size(); i+=2)
         f0_samples.push_back(v.at(i));
     smooth(f0_samples, smoothed);
-    for (int i=0; i<smoothed.size(); i+=2)
+    for (int i=0; i<smoothed.size(); ++i)
         v[i*2] = smoothed.at(i);
 
     double t0 = ann.getTargetStart() - beg;
