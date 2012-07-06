@@ -59,24 +59,38 @@ static void linear_interpolation(QVector<float> &f0_samples, QVector<float> &out
     }
 }
 
+static void filter(int order, float *b, float *a,
+                   QVector<float> &input, QVector<float> &output)
+{
+    output.clear();
+    for (int i=0; i < input.size(); ++i) {
+        float y = 0.0;
+        for (int k=0; k <=order; ++k)
+            y += a[k] * input.value(i-k, 0.0) + b[k] * output.value(i-k-1, 0.0);
+        output.push_back(y);
+    }
+}
+
 static void smooth(QVector<float> &f0_samples, QVector<float> &output)
 {
     static float B[4] = {0.002898195, 0.008694584, 0.008694584, 0.002898195};
     static float A[4] = {1.0000000, -2.3740947, 1.9293557, -0.5320754};
 
     QVector<float> input;
+    QVector<float> l;
 
-    linear_interpolation(f0_samples, input);
+    int N = f0_samples.size();
 
-    output.clear();
-    for (int i=0; i < input.size(); ++i) {
-        float y = 0.0;
-        for (int k=0; k <= 3 && i-k>=0; ++k)
-            y += A[k] * input.at(i-k);
-        for (int k=0; k <= 3 && i-k>0; ++k)
-            y += B[k] * output.at(i-k-1);
-        output.push_back(y);
-        qDebug() << f0_samples.at(i) << input.at(i) << output.at(i);
+    linear_interpolation(f0_samples, l);
+    filter(3, B, A, l, output);
+    for (int i=0; i < N; ++i)
+        input.push_back(output.at(N-i-1));
+    filter(3, B, A, input, output);
+    for (int i=0; i < N; ++i)
+        input[i] = output.at(N-i-1);
+    for (int i=0; i < N; ++i) {
+        output[i] = input.at(i);
+        qDebug() << f0_samples.at(i) << l.at(i) << output.at(i);
     }
 }
 
