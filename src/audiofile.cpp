@@ -1,9 +1,11 @@
 #include "audiofile.h"
+#include "player.h"
 
 AudioFile::AudioFile(QObject *parent):
     QIODevice(parent),
     _sndfile(0),
-    _counter(0)
+    _counter(0),
+    _empty_read(0)
 {
     QIODevice::open(QIODevice::ReadOnly);
 }
@@ -62,7 +64,7 @@ qint64 AudioFile::readData(char *data, qint64 maxlen)
         return -1;
 
     if (_counter >= _region_frames)
-        return 0;
+        return _empty_read++ > 0 ? -1 : 0;
 
     if (maxlen <= 0)
         return 0;
@@ -72,10 +74,36 @@ qint64 AudioFile::readData(char *data, qint64 maxlen)
     if (frames > _region_frames)
         frames = _region_frames;
 
-    sf_count_t n = sf_readf_short(_sndfile, (short*) data, frames);
-    _counter += n;
+    short tmp[frames * _sfinfo.channels];
 
-    return n * sizeof(short) * _sfinfo.channels;
+    sf_count_t n = sf_readf_short(_sndfile, tmp, frames);
+
+    // compute multiplier
+    double dB = Player::getVolumeLevel();
+    double multiplier = pow(10.0, dB / 20.0);
+
+    // adjust multiplier to avoid clipping
+    short maxval = SHRT_MIN;
+    for (int i=0; i < n * _sfinfo.channels; ++i)
+        if (tmp[i] > maxval)
+            maxval = tmp[i];
+    if (multiplier * maxval > SHRT_MAX)
+        multiplier = SHRT_MAX / maxval;
+
+    // apply multiplier
+    for (int i=0; i < n * _sfinfo.channels; ++i)
+        ((short*)data)[i] = round(multiplier * tmp[i]);
+
+    if (n == 0) {
+        return _empty_read++ > 0 ? -1 : 0;
+    }
+    else {
+        _empty_read = 0;
+
+        _counter += n;
+
+        return n * sizeof(short) * _sfinfo.channels;
+    }
 }
 
 qint64 AudioFile::writeData(const char *data, qint64 len)
@@ -91,11 +119,6 @@ qint64 AudioFile::bytesAvailable() const
         return 0;
 
     return (_region_frames - _counter) * sizeof(short) * _sfinfo.channels;
-}
-
-void AudioFile::close()
-{
-    qDebug() << "close";
 }
 
 void AudioFile::setRegion(double start, double end)

@@ -21,7 +21,6 @@ public:
     qint64 readData(char *data, qint64 maxlen);
     qint64 writeData(const char *data, qint64 len);
     qint64 bytesAvailable() const;
-    void close();
     void setRegion(double start, double end);
 
 private:
@@ -31,6 +30,7 @@ private:
     QString _last_error_msg;
     QAudioFormat _format;
     sf_count_t _region_frames;
+    int _empty_read;  // count attempts to read beyond eof
 };
 
 #endif // AUDIOFILE_H

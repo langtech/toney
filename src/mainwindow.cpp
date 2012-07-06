@@ -6,7 +6,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    _player(this)
 {
     ui->setupUi(this);
 }
@@ -99,6 +100,11 @@ void MainWindow::on_action_help_triggered(bool v)
 {
     Q_UNUSED(v);
     _help.show();
+}
+
+void MainWindow::on_volumeSlider_valueChanged(int v)
+{
+    Player::setVolumeLevel(v);
 }
 
 void MainWindow::removeCluster(Cluster *cluster)

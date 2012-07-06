@@ -95,7 +95,6 @@ private:
     static QStringList _tones;
     static QHash<_annotation_t*,int>  _ref_counter;
     static QString _empty_string;
-    static PLAYER *_player;
     _annotation_t *_ann;
 };
 

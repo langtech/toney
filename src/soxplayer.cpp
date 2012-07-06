@@ -26,8 +26,8 @@ void SoxPlayer::play(const QString &path, double start, double end)
     _path = path;
     _start = start;
     _end = end;
-    _cmd = QString("%1 %2 trim %3 =%4 fade 0.05 0 0.05")
-            .arg(_play).arg(path).arg(start).arg(end);
+    _cmd = QString("%1 %2 trim %3 =%4 fade 0.05 0 0.05 gain %5")
+            .arg(_play).arg(path).arg(start).arg(end).arg(_volume_level);
    _proc.start(_cmd, QIODevice::NotOpen);
 }
 

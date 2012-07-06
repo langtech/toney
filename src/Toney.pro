@@ -66,9 +66,12 @@ FORMS    += mainwindow.ui \
 
 unix {
     LIBS += -lsndfile
-    SOURCES += soxplayer.cpp
-    HEADERS += soxplayer.h
-    DEFINES += SOXPLAYER
+    #SOURCES += soxplayer.cpp
+    #HEADERS += soxplayer.h
+    #DEFINES += SOXPLAYER
+    SOURCES += qtplayer.cpp
+    HEADERS += qtplayer.h
+    DEFINES += QTPLAYER
 }
 
 macx {
