@@ -9,6 +9,7 @@ class Player : public QObject
 public:
     static Player *getInstance(QObject *parent=0);
     virtual void play(const QString& path, double start, double end) = 0;
+    virtual void hum(float *f0_samples, int n, double start, double end) = 0;
     virtual void stop() = 0;
     static void setVolumeLevel(int v) { _volume_level = v; }
     static int getVolumeLevel() { return _volume_level; }

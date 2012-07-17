@@ -13,6 +13,7 @@ class QtPlayer : public Player
 
 public slots:
     virtual void play(const QString& path, double start, double end);
+    virtual void hum(float *f0_samples, int n, double start, double end);
     virtual void stop();
 
 signals:

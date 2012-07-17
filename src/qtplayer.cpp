@@ -48,6 +48,11 @@ void QtPlayer::play(const QString &path, double start, double end)
 
 }
 
+void QtPlayer::hum(float *f0_samples, int n, double start, double end)
+{
+    qDebug() << "hum" << n << start << endl;
+}
+
 void QtPlayer::stop()
 {
     qDebug() << "stop";

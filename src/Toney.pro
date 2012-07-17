@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     get_f0/dp_f0.c \
     helpdialog.cpp \
     helpbrowser.cpp \
-    configfile.cpp
+    configfile.cpp \
+    sinewavefile.cpp
 
 HEADERS  += mainwindow.h \
     cluster.h \
@@ -57,7 +58,8 @@ HEADERS  += mainwindow.h \
     get_f0/f0_structs.h \
     helpdialog.h \
     helpbrowser.h \
-    configfile.h
+    configfile.h \
+    sinewavefile.h
 
 FORMS    += mainwindow.ui \
     cluster.ui \

@@ -85,6 +85,7 @@ public:
 
     void playTarget(QAction *act=0);
     void playFrame();
+    void hum();
 
     bool operator ==(const Annotation& ann) const;
 
