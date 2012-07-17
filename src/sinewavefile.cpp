@@ -32,13 +32,14 @@ SineWaveFile::~SineWaveFile()
 {
 }
 
-const QAudioFormat SineWaveFile::format() const
+const QAudioFormat &SineWaveFile::format() const
 {
     return _format;
 }
 
 qint64 SineWaveFile::readData(char *data, qint64 maxlen)
 {
+    /*
     float samplerate = (float) SAMPLERATE;
     float c = PI * 2.0 / samplerate;
     int i = 0;
@@ -65,6 +66,10 @@ qint64 SineWaveFile::readData(char *data, qint64 maxlen)
     }
 
     sf_close(sndfile);
+    */
+    for (qint64 i=0; i < maxlen; ++i)
+        data[i] = 0;
+    return maxlen;
 }
 
 qint64 SineWaveFile::writeData(const char *data, qint64 len)
@@ -73,7 +78,7 @@ qint64 SineWaveFile::writeData(const char *data, qint64 len)
     return len;
 }
 
-void SindWaveFile::_setFormat()
+void SineWaveFile::_setFormat()
 {
     _format.setSampleRate(SAMPLERATE);
     _format.setSampleSize(sizeof(short) * 8);

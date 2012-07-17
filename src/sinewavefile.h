@@ -10,7 +10,7 @@ class SineWaveFile : public QIODevice
 
 public:
     SineWaveFile(QObject *parent=0);
-    SineWaveFile(float *frequency_samples,
+    SineWaveFile(const float *frequency_samples,
                  int n,
                  float duration,
                  QObject *parent=0);
