@@ -3,13 +3,16 @@
 static const float PI = 3.14159265;
 static const int SAMPLERATE = 16000;
 static const float AMPLITUDE = 7000.0;
+static const float INC = PI * 2.0 / SAMPLERATE;
 
 SineWaveFile::SineWaveFile(QObject *parent) :
     QIODevice(parent),
     _samples(0),
     _n(0),
     _dur(0.0),
-    _theta(0.0)
+    _theta(0.0),
+    _i(0),
+    _total(0)
 {
     _setFormat();
 }
@@ -23,7 +26,9 @@ SineWaveFile::SineWaveFile(
     _samples(frequency_samples),
     _n(n),
     _dur(duration),
-    _theta(0.0)
+    _theta(0.0),
+    _i(0),
+    _total(_dur * SAMPLERATE)
 {
     _setFormat();
 }
@@ -39,37 +44,30 @@ const QAudioFormat &SineWaveFile::format() const
 
 qint64 SineWaveFile::readData(char *data, qint64 maxlen)
 {
-    /*
-    float samplerate = (float) SAMPLERATE;
-    float c = PI * 2.0 / samplerate;
-    int i = 0;
-    float t = 0.0;
-    float theta = 0.0;
-    float step = _dur / 30.0;
-    int n =
-    short buf[(int) (step * samplerate)];
-    int counter = 0;
-    for (; i < obj->wptr; ++i) {
-      float delta = c * obj->data[i];
-      if (delta < 0.00001)
-        theta = 0.0;
-      counter = 0;
-      while (t < i * step) {
-        float v = sin(theta) * AMPLITUDE;
-        buf[counter++] = v;
-        //printf("%f %f\n", t,v);
-        theta += delta;
-        theta -= floor(theta / (2.0 * pi)) * 2.0 * pi;
-        t += 1.0 / samplerate;
-      }
-      sf_writef_short(sndfile, buf, counter);
+    if (_i >= _total)
+        return -1;
+
+    int N = _i + maxlen / sizeof(short);
+    if (N > _total)
+        N = _total;
+    short *buf = (short*) data;
+    int count = 0;
+
+    if (_n <= 0) {
+        for (; _i < N; _i++)
+            buf[count++] = 0;
+        return count * sizeof(short);
+    }
+    else {
+        for (; _i < N; _i++) {
+            buf[count++] = sin(_theta) * AMPLITUDE;
+            int j = (int) floor((_i + k) / _total);
+            _theta += INC * _samples[j];
+            _theta -= floor(_theta / 2.0 / PI) * 2.0 * PI;
+        }
     }
 
-    sf_close(sndfile);
-    */
-    for (qint64 i=0; i < maxlen; ++i)
-        data[i] = 0;
-    return maxlen;
+    return count * sizeof(short);
 }
 
 qint64 SineWaveFile::writeData(const char *data, qint64 len)

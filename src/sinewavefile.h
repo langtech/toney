@@ -28,6 +28,8 @@ private:
     int _n; // number of samples
     float _dur; // duration
     float _theta;
+    float _i;
+    int _total;
     QAudioFormat _format;
 };
 
