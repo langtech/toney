@@ -4,7 +4,8 @@
 QtPlayer::QtPlayer(QObject *parent) :
     Player(parent),
     _audio_out(0),
-    _af(0)
+    _af(0),
+    _wav(0)
 {
     registerInstance(this);
 }
@@ -48,9 +49,22 @@ void QtPlayer::play(const QString &path, double start, double end)
 
 }
 
-void QtPlayer::hum(float *f0_samples, int n, double start, double end)
+void QtPlayer::hum(float *f0_samples, int nsamp, double start, double end)
 {
-    qDebug() << "hum" << n << start << endl;
+    _wav = new SineWaveFile(f0_samples, nsamp, end - start, this);
+    QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
+    if (!info.isFormatSupported(_wav->format())) {
+        qDebug() << "audio format not supported";
+        return;
+    }
+
+    _audio_out = new QAudioOutput(info, _wav->format(), this);
+
+    connect(_audio_out, SIGNAL(stateChanged(QAudio::State)),
+            this, SLOT(_finished_humming(QAudio::State)));
+
+    qDebug() << "start humming...";
+    _audio_out->start(_wav);
 }
 
 void QtPlayer::stop()
@@ -80,5 +94,15 @@ void QtPlayer::_finished_playing(QAudio::State state)
         qDebug() << "calling stop";
         stop();
         emit finishedPlaying(_path, _start, _end);
+    }
+}
+
+void QtPlayer::_finished_humming(QAudio::State state)
+{
+    if (state == QAudio::IdleState || state == QAudio::StoppedState) {
+        delete _audio_out;
+        delete _wav;
+        _audio_out = 0;
+        _wav = 0;
     }
 }

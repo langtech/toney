@@ -19,17 +19,19 @@ public:
     const QAudioFormat &format() const;
     qint64 readData(char *data, qint64 maxlen);
     qint64 writeData(const char *data, qint64 len);
+    qint64 bytesAvailable() const;
 
 private:
     void _setFormat();
+    void _updateTheta();
 
 private:
     const float *_samples; // frequency samples
-    int _n; // number of samples
-    float _dur; // duration
-    float _theta;
-    float _i;
-    int _total;
+    int _samples_size;     // size of _samples
+    float _dur;   // duration
+    float _theta; // current angle
+    int _i;       // sample number
+    int _total;   // total number of audio samples to generate
     QAudioFormat _format;
 };
 

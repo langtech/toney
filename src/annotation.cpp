@@ -308,7 +308,7 @@ void Annotation::hum()
         return;
 
     PLAYER::getInstance()->hum(
-                _ann->f0, 30, _ann->frm_start, _ann->frm_end);
+                _ann->f0, 30, _ann->start, _ann->end);
 }
 
 bool Annotation::operator ==(const Annotation& ann) const
