@@ -26,6 +26,10 @@ private:
     void _updateTheta();
 
 private:
+    int _samplerate;
+    float _inc;
+    int _collar;      // width of bases of slopes of trapezoidal window
+                      //   that is used for removing clicking sound
     const float *_samples; // frequency samples
     int _samples_size;     // size of _samples
     float _dur;   // duration
