@@ -1,4 +1,5 @@
 #include "sinewavefile.h"
+#include <cassert>
 
 static const float PI = 3.14159265;
 static const float AMPLITUDE = 7000.0;
