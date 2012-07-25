@@ -26,12 +26,10 @@ protected:
 private slots:
     void _stop();
     void _finished_playing(QAudio::State state);
-    void _finished_humming(QAudio::State state);
 
 private:
     QAudioOutput *_audio_out;
-    AudioFile *_af;
-    SineWaveFile * _wav;
+    QIODevice *_af;
     QString _path;
     double _start;
     double _end;
