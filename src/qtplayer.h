@@ -24,6 +24,7 @@ protected:
     ~QtPlayer();
 
 private slots:
+    void _stop();
     void _finished_playing(QAudio::State state);
     void _finished_humming(QAudio::State state);
 

@@ -16,8 +16,14 @@ QtPlayer::~QtPlayer()
 
 void QtPlayer::play(const QString &path, double start, double end)
 {
-    if (_audio_out)
-        stop();
+    QMutexLocker lock(&_mutex);
+
+    qDebug() << "Play" << path << start << end;
+
+    if (_audio_out) {
+        qDebug() << "Still playing -- force stop";
+        _stop();
+    }
 
     _af = new AudioFile(this);
 
@@ -47,6 +53,7 @@ void QtPlayer::play(const QString &path, double start, double end)
 
     _audio_out->start(_af);
 
+    qDebug() << "Started playing";
 }
 
 void QtPlayer::hum(float *f0_samples, int nsamp, double start, double end)
@@ -69,22 +76,25 @@ void QtPlayer::hum(float *f0_samples, int nsamp, double start, double end)
 
 void QtPlayer::stop()
 {
-    qDebug() << "stop";
+    QMutexLocker lock(&_mutex);
+    _stop();
+}
 
-    if (_mutex.tryLock()) {
-
+void QtPlayer::_stop()
+{
     if (_audio_out) {
+        qDebug() << "Stopping...";
         _audio_out->disconnect(this);
         _audio_out->stop();
         _af->close();
-        qDebug() << "deleting _audio_out -- state:" << _audio_out->state();
         delete _audio_out;
-        qDebug() << "ok";
         delete _af;
         _audio_out = 0;
         _af = 0;
+        qDebug() << "Stopped";
     }
-
+    else {
+        qDebug() << "Nothing to stop";
     }
 }
 
