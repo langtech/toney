@@ -302,6 +302,15 @@ void Annotation::playFrame()
                 getAudioPath(), _ann->frm_start, _ann->frm_end);
 }
 
+void Annotation::hum()
+{
+    if (_ann->pitch_tracked == 0)
+        return;
+
+    PLAYER::getInstance()->hum(
+                _ann->f0, 30, _ann->start, _ann->end);
+}
+
 bool Annotation::operator ==(const Annotation& ann) const
 {
     return ann._ann == _ann;

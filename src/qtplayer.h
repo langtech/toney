@@ -4,6 +4,7 @@
 #include <player.h>
 #include <QtMultimedia>
 #include <audiofile.h>
+#include <sinewavefile.h>
 
 class QtPlayer : public Player
 {
@@ -13,6 +14,7 @@ class QtPlayer : public Player
 
 public slots:
     virtual void play(const QString& path, double start, double end);
+    virtual void hum(float *f0_samples, int nsamp, double start, double end);
     virtual void stop();
 
 signals:
@@ -22,11 +24,12 @@ protected:
     ~QtPlayer();
 
 private slots:
+    void _stop();
     void _finished_playing(QAudio::State state);
 
 private:
     QAudioOutput *_audio_out;
-    AudioFile *_af;
+    QIODevice *_af;
     QString _path;
     double _start;
     double _end;
