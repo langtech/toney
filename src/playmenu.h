@@ -17,7 +17,9 @@ public slots:
 
 private:
     Annotation _ann;
-
+    QAction *_act_play_target;
+    QAction *_act_play_frame;
+    QAction *_act_play_melody;
 };
 
 #endif // PLAYMENU_H
