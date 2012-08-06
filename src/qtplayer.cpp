@@ -6,11 +6,11 @@ QtPlayer::QtPlayer(QObject *parent) :
     _audio_out(0),
     _af(0)
 {
+    registerInstance(this);
 }
 
 QtPlayer::~QtPlayer()
 {
-
 }
 
 void QtPlayer::play(const QString &path, double start, double end)
@@ -50,20 +50,29 @@ void QtPlayer::play(const QString &path, double start, double end)
 
 void QtPlayer::stop()
 {
+    qDebug() << "stop";
+
+    if (_mutex.tryLock()) {
+
     if (_audio_out) {
         _audio_out->disconnect(this);
         _audio_out->stop();
         _af->close();
+        qDebug() << "deleting _audio_out -- state:" << _audio_out->state();
         delete _audio_out;
+        qDebug() << "ok";
         delete _af;
         _audio_out = 0;
         _af = 0;
+    }
+
     }
 }
 
 void QtPlayer::_finished_playing(QAudio::State state)
 {
     if (state == QAudio::IdleState || state == QAudio::StoppedState) {
+        qDebug() << "calling stop";
         stop();
         emit finishedPlaying(_path, _start, _end);
     }

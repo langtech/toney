@@ -5,16 +5,17 @@ ListPlayer::ListPlayer(QObject *parent) :
     _list(0),
     _state(STOPPED),
     _idx(0),
-    _mode(TARGET)
+    _mode(TARGET),
+    _player(Player::getInstance())
 {
-    connect(&_player,
+    connect(_player,
             SIGNAL(finishedPlaying(QString,double,double)),
             SLOT(_finished_playing()));
 }
 
 ListPlayer::~ListPlayer()
 {
-    _player.stop();
+    _player->stop();
 }
 
 void ListPlayer::setList(TargetList *list)
@@ -39,7 +40,7 @@ void ListPlayer::play()
 void ListPlayer::pause()
 {
     if (_state == PLAYING) {
-        _player.stop();
+        _player->stop();
         _state = PAUSED;
     }
 }
@@ -54,7 +55,7 @@ void ListPlayer::resume()
 
 void ListPlayer::stop()
 {
-    _player.stop();
+    _player->stop();
     _state = STOPPED;
     _idx = 0;
     emit finishedPlaying();
@@ -90,14 +91,14 @@ void ListPlayer::_next()
         _list->setCurrentRow(_idx);
         Annotation ann = _list->annotation(_idx);
         if (_mode == TARGET) {
-            _player.play(ann.getAudioPath(),
-                         ann.getTargetStart(),
-                         ann.getTargetEnd());
+            _player->play(ann.getAudioPath(),
+                          ann.getTargetStart(),
+                          ann.getTargetEnd());
         }
         else if (_mode == FRAME) {
-            _player.play(ann.getAudioPath(),
-                         ann.getFrameStart(),
-                         ann.getFrameEnd());
+            _player->play(ann.getAudioPath(),
+                          ann.getFrameStart(),
+                          ann.getFrameEnd());
         }
         _idx++;
     }
