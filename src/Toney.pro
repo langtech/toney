@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     helpdialog.cpp \
     helpbrowser.cpp \
     configfile.cpp \
-    sinewavefile.cpp
+    sinewavefile.cpp \
+    wrap_get_f0.cpp
 
 HEADERS  += mainwindow.h \
     cluster.h \
@@ -59,7 +60,8 @@ HEADERS  += mainwindow.h \
     helpdialog.h \
     helpbrowser.h \
     configfile.h \
-    sinewavefile.h
+    sinewavefile.h \
+    toney_utils.h
 
 FORMS    += mainwindow.ui \
     cluster.ui \
