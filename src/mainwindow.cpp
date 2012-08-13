@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QtGui>
 #include "textgrid.h"
-#include "toney.h"
+#include "toney_utils.h"
 #include <sndfile.h>
 
 MainWindow::MainWindow(QWidget *parent) :
