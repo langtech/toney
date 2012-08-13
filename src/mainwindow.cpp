@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QtGui>
 #include "textgrid.h"
+#include "toney.h"
 #include <sndfile.h>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -64,6 +65,17 @@ void MainWindow::on_action_Add_cluster_triggered()
     Cluster *c = ui->scrollAreaWidgetContents->addCluster();
     connect(c, SIGNAL(clusterRemovalRequested(Cluster*)),
             SLOT(removeCluster(Cluster*)));
+}
+
+void MainWindow::on_action_Reclassify_triggered()
+{
+    QHash<const Annotation, QString> s;
+    foreach (AnnotationSet* aset, _pools.values()) {
+        foreach (Annotation ann, aset->getAnnotations()) {
+            s.insert(ann, "");
+        }
+    }
+    reclassify(s); //
 }
 
 void MainWindow::on_action_Exit_triggered()
