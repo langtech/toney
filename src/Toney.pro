@@ -62,8 +62,7 @@ HEADERS  += mainwindow.h \
     helpbrowser.h \
     configfile.h \
     sinewavefile.h \
-    toney_utils.h \
-    toney.h
+    toney_utils.h
 
 FORMS    += mainwindow.ui \
     cluster.ui \

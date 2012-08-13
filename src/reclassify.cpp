@@ -1,5 +1,5 @@
 #include "annotation.h"
-#include "toney.h"
+#include "toney_utils.h"
 
 void reclassify(QHash<const Annotation,QString> &s)
 {

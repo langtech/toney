@@ -1,11 +1,8 @@
+#include "toney_utils.h"
 #include <sndfile.h>
 #include <QString>
 #include <QVector>
 #include <cmath>
-extern "C" {
-    #include "get_f0/f0.h"
-}
-
 #include <QDebug>
 
 static void callback(
