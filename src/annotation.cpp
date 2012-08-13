@@ -1,4 +1,5 @@
 #include "annotation.h"
+#include "toney_utils.h"
 #include <QDir>
 #include <sndfile.h>
 #include <QDebug>
@@ -255,8 +256,20 @@ const float* Annotation::getF0() const
 {
     if (_ann->pitch_tracked)
         return _ann->f0;
-    else
-        return 0;
+    else {
+        if (get_f0_samples(
+                    getAudioPath().toUtf8().data(),
+                    _ann->start,
+                    _ann->end,
+                    _ann->f0))
+        {
+            _ann->pitch_tracked = 1;
+            return _ann->f0;
+        }
+        else {
+            return 0;
+        }
+    }
 }
 
 QByteArray Annotation::getId() const

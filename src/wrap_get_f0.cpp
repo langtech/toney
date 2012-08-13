@@ -138,10 +138,15 @@ bool get_f0_samples(
         char *audio,
         double beg,
         double end,
-        get_f0_session *session,
-        QVector<float> &result)
+        float *result,
+        int n_samples,
+        get_f0_session *session
+        )
 {
     if (audio == 0)
+        return false;
+
+    if (n_samples < 2)
         return false;
 
     SF_INFO sfinfo;
@@ -149,6 +154,15 @@ bool get_f0_samples(
     if (sndfile == 0)
         return false;
     sf_close(sndfile);
+
+    get_f0_session *f0_session = session;
+    if (f0_session == 0) {
+        f0_session = init_get_f0();
+        f0_session->par->min_f0 = 60.0;
+        f0_session->par->max_f0 = 650.0;
+        f0_session->par->wind_dur = 0.01;
+        f0_session->par->frame_step = 0.005;
+    }
 
     double fend = ((double) sfinfo.frames) / sfinfo.samplerate;
     double org_beg = beg;
@@ -163,22 +177,22 @@ bool get_f0_samples(
     QVector<float> v;
     QVector<float> f0_samples;
     QVector<float> smoothed;
-    get_f0(audio, session, beg, end, callback, &v);
+    get_f0(audio, f0_session, beg, end, callback, &v);
     for (int i=0; i<v.size(); i+=2)
         f0_samples.push_back(v.at(i));
     smooth(f0_samples,
            smoothed,
            org_beg - beg,
            org_end - org_beg,
-           session->par->frame_step);
+           f0_session->par->frame_step);
     for (int i=0; i<smoothed.size(); ++i)
         v[i*2] = smoothed.at(i);
 
     double t0 = org_beg - beg;
-    double step = (org_end - org_beg) / 29.0;
-    for (int i=0; i < 30; ++i) {
+    double step = (org_end - org_beg) / (n_samples - 1);
+    for (int i=0; i < n_samples; ++i) {
         double t = t0 + step * i;
-        double x = t / session->par->frame_step;
+        double x = t / f0_session->par->frame_step;
         double x1 = floor(x);
         double x2 = ceil(x);
         double x0 = x1 - 1.0;
@@ -251,8 +265,11 @@ bool get_f0_samples(
                 y = (y2 - y1) / (x2 - x1) * (x - x1) + y1;
             }
         }
-        result.push_back((float) y);
+        result[i] = (float) y;
     }
+
+    if (session == 0)
+        close_get_f0(f0_session);
 
     return true;
 }

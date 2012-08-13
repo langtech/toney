@@ -1,6 +1,5 @@
 #include "f0contour.h"
 #include "playmenu.h"
-#include "toney_utils.h"
 #include <QDebug>
 
 
@@ -10,8 +9,7 @@ F0Contour::F0Contour(const Annotation &ann, QGraphicsItem *parent) :
     _pen_selected(Qt::darkBlue),
     _pen_hover(Qt::green),
     _pen(Qt::black),
-    _highlighted(false),
-    _f0_session(0)
+    _highlighted(false)
 {
     _pen_selected.setCosmetic(true);
     _pen_selected.setWidth(5);
@@ -25,8 +23,6 @@ F0Contour::F0Contour(const Annotation &ann, QGraphicsItem *parent) :
 
 F0Contour::~F0Contour()
 {
-    if (_f0_session)
-        close_get_f0(_f0_session);
 }
 
 void F0Contour::setHighlighted(bool selected)
@@ -50,23 +46,7 @@ bool F0Contour::isHighlighted() const
 
 bool F0Contour::computeF0()
 {
-    if (_f0_session == 0) {
-        _f0_session = init_get_f0();
-        _f0_session->par->min_f0 = 60.0;
-        _f0_session->par->max_f0 = 650.0;
-        _f0_session->par->wind_dur = 0.01;
-        _f0_session->par->frame_step = 0.005;
-    }
-
-    QVector<float> f0_samples;
-    if (get_f0_samples(
-                _ann.getAudioPath().toUtf8().data(),
-                _ann.getTargetStart(),
-                _ann.getTargetEnd(),
-                _f0_session,
-                f0_samples))
-    {
-        _ann.setF0(f0_samples);
+    if (_ann.getF0() != 0) {
         _redraw();
         return true;
     }
