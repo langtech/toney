@@ -23,6 +23,8 @@
     typedef quint64 ptr_t;
 #endif
 
+#define _ANN_NUM_F0_SAMPLES 30
+
 typedef struct {
     QString label;      // label on target
     double start;       // start time on target
@@ -34,7 +36,7 @@ typedef struct {
     int audio_path;     // path to the audio file containing target & frame
     int spkr;
     int tone;
-    float f0[30];
+    float f0[_ANN_NUM_F0_SAMPLES];
     int pitch_tracked;  // whether pitch traking is done (1) or not (0)
     int modified;       // whether annotation has been modified (1) or not (0)
                         //   this is set when tone annotation changes
@@ -88,6 +90,9 @@ public:
     void hum();
 
     bool operator ==(const Annotation& ann) const;
+
+public:
+    static int NUM_F0_SAMPLES;
 
 private:
     static QStringList _ann_paths;
