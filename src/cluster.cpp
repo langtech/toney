@@ -157,6 +157,9 @@ static const char * const delete_cluster_xpm[] = {
     "................",
 };
 
+int Cluster::_hsvh = -1;
+int Cluster::_hsvs = 255;
+int Cluster::_hsvv = 200;
 
 Cluster::Cluster(QWidget *parent) :
     QWidget(parent),
@@ -172,6 +175,10 @@ Cluster::Cluster(QWidget *parent) :
     connect(&_list_player,
             SIGNAL(finishedPlaying()),
             SLOT(_finished_playing()));
+
+    ui->colorPanel->setAutoFillBackground(true);
+
+    changeColor(); // currently no color is assigned
 }
 
 Cluster::~Cluster()
@@ -210,6 +217,25 @@ void Cluster::setLabel(const QString& label)
 QString Cluster::getLabel() const
 {
     return ui->lineEdit->text();
+}
+
+void Cluster::setColor(const QColor &color)
+{
+    QPalette p = ui->colorPanel->palette();
+    p.setColor(QPalette::Window, color);
+    ui->colorPanel->setPalette(p);
+    _color = color;
+}
+
+QColor Cluster::getColor()
+{
+    return _color;
+}
+
+void Cluster::changeColor()
+{
+    _next_color();
+    setColor(_color);
 }
 
 void Cluster::setConfig(const Config &config)
@@ -431,6 +457,24 @@ void Cluster::_finished_playing()
     else {
         ui->btnPlay2->setIcon(QIcon(QPixmap(play_frame_xpm)));
     }
+}
+
+void Cluster::_next_color()
+{
+    if (_hsvh < 0) {
+        _hsvh = rand() % 360;
+        _hsvs = rand() % 156 + 60;
+        _hsvv = rand() % 146 + 120;
+    }
+
+    _hsvh += 107;
+    if (_hsvh >= 360) {
+        _hsvh %= 360;
+        _hsvs = _hsvs < 127 ? _hsvs - 127 + 256 : _hsvs - 67;
+        _hsvv = _hsvv < 167 ? _hsvv - 167 + 256 : _hsvv - 47;
+    }
+
+    _color.setHsv(_hsvh, _hsvs, _hsvv);
 }
 
 QString Cluster::_item_label(const Annotation &ann)

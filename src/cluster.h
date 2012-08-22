@@ -22,6 +22,9 @@ public:
     void removeAnnotation(const Annotation &ann);
     void setLabel(const QString &label);
     QString getLabel() const;
+    void setColor(const QColor &color);
+    QColor getColor();
+    void changeColor();
     void setConfig(const Config &config);
     QSet<Annotation> annotations() const;
     int getMaxLabelWidth();
@@ -53,13 +56,20 @@ private slots:
     void _finished_playing();
 
 private:
+    void _next_color();
     QString _item_label(const Annotation &ann);
+
+private:
+    static int _hsvh;
+    static int _hsvs;
+    static int _hsvv;
 
 private:
     Ui::Cluster *ui;
     ListPlayer _list_player;
     Config _config;
     QPoint _drag_start_pos;
+    QColor _color;
 };
 
 #endif // CLUSTER_H
