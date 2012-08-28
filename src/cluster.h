@@ -43,7 +43,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *event);
 
 private slots:
-    void on_lineEdit_textChanged(const QString &text);
+    void on_lineEdit_editingFinished();
     void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
     void on_listWidget_currentItemChanged(QListWidgetItem * current,
                                           QListWidgetItem * previous);
@@ -58,6 +58,7 @@ private slots:
 private:
     void _next_color();
     QString _item_label(const Annotation &ann);
+    QString _mk_unique(const QString &label);
 
 private:
     static int _hsvh;

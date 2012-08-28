@@ -176,9 +176,10 @@ Cluster::Cluster(QWidget *parent) :
             SIGNAL(finishedPlaying()),
             SLOT(_finished_playing()));
 
-    ui->colorPanel->setAutoFillBackground(true);
-
     changeColor(); // currently no color is assigned
+
+    // if "Cluster1" exists, it will find a unique label
+    setLabel("Cluster1");
 }
 
 Cluster::~Cluster()
@@ -205,12 +206,12 @@ void Cluster::removeAnnotation(const Annotation &ann)
 
 void Cluster::setLabel(const QString& label)
 {
-    ui->lineEdit->setText(label);
+    // make sure the label is unique
+    // make it unique if necessary
+    QString new_label = _mk_unique(label);
+    ui->lineEdit->setText(new_label);
     for (int i=0; i < ui->listWidget->count(); ++i) {
-        QListWidgetItem *item = ui->listWidget->item(i);
-        QVariant data = item->data(Qt::UserRole);
-        Annotation ann = data.value<Annotation>();
-        ann.setTone(label);
+        ui->listWidget->annotation(i).setTone(new_label);
     }
 }
 
@@ -357,11 +358,9 @@ void Cluster::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void Cluster::on_lineEdit_textChanged(const QString &text)
+void Cluster::on_lineEdit_editingFinished()
 {
-    for (int i=0; i < ui->listWidget->count(); ++i) {
-        ui->listWidget->annotation(i).setTone(text);
-    }
+    setLabel(getLabel());
 }
 
 void Cluster::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
@@ -463,15 +462,15 @@ void Cluster::_next_color()
 {
     if (_hsvh < 0) {
         _hsvh = rand() % 360;
-        _hsvs = rand() % 156 + 60;
-        _hsvv = rand() % 146 + 120;
+        _hsvs = rand() % 196 + 60;
+        _hsvv = rand() % 136 + 120;
     }
 
     _hsvh += 107;
     if (_hsvh >= 360) {
         _hsvh %= 360;
-        _hsvs = _hsvs < 127 ? _hsvs - 127 + 256 : _hsvs - 67;
-        _hsvv = _hsvv < 167 ? _hsvv - 167 + 256 : _hsvv - 47;
+        _hsvs = _hsvs < 147 ? _hsvs - 147 + 256 : _hsvs - 89;
+        _hsvv = _hsvv < 177 ? _hsvv - 177 + 256 : _hsvv - 59;
     }
 
     _color.setHsv(_hsvh, _hsvs, _hsvv);
@@ -485,4 +484,24 @@ QString Cluster::_item_label(const Annotation &ann)
     if (_config.show_speaker_label)
         label += "-" + ann.getSpeaker();
     return label;
+}
+
+QString Cluster::_mk_unique(const QString &label)
+{
+    QSet<QString> labels;
+    ClusterBox *cb = dynamic_cast<ClusterBox*>(parent());
+    foreach (Cluster *cluster, cb->getClusters()) {
+        if (cluster != this)
+            labels << cluster->getLabel();
+    }
+    if (labels.find(label) == labels.end())
+        return label;
+    QRegExp rx("\\d+\\s*$");
+    int i = rx.indexIn(label);
+    QString prefix = i >= 0 ? label.left(i) : label;
+    QString new_label(prefix + "1");
+    int c = 1;
+    while (labels.find(new_label) != labels.end())
+        new_label = prefix + QString("%1").arg(++c);
+    return new_label;
 }
