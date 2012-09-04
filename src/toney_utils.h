@@ -5,6 +5,7 @@ extern "C" {
 #include "get_f0/f0.h"
 }
 #include "annotation.h"
+#include "com.h"
 
 bool get_f0_samples(
         char *audio,

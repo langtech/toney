@@ -75,7 +75,14 @@ void MainWindow::on_action_Reclassify_triggered()
             s.insert(ann, "");
         }
     }
-    reclassify(s); //
+    reclassify(s);
+
+    QHash<const Annotation, QString>::iterator i = s.begin();
+    for (; i != s.end(); ++i) {
+        Annotation ann = i.key();
+        ann.setTone2(i.value());
+    }
+    ui->poolWidget->refresh();
 }
 
 void MainWindow::on_action_Exit_triggered()

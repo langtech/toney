@@ -19,6 +19,7 @@ Annotation::Annotation():
     _ann->audio_path = -1;
     _ann->spkr = -1;
     _ann->tone = -1;
+    _ann->tone2 = -1;
     _ann->frm_start = -1.0;
     _ann->frm_end = -1.0;
     _ann->start = -1.0;
@@ -90,6 +91,7 @@ Annotation Annotation::clone()
     ann._ann->audio_path = _ann->audio_path;
     ann._ann->spkr = _ann->spkr;
     ann._ann->tone = _ann->tone;
+    ann._ann->tone2 = _ann->tone2;
     ann._ann->pitch_tracked = _ann->pitch_tracked;
     ann._ann->modified = _ann->modified;
     for (int i=0; i < NUM_F0_SAMPLES; ++i)
@@ -158,10 +160,23 @@ void Annotation::setTone(const QString& tone)
     _ann->modified = 1;
 }
 
+void Annotation::setTone2(const QString& tone)
+{
+    int idx = _tones.indexOf(tone);
+    if (idx >= 0) {
+        _ann->tone2 = idx;
+    }
+}
+
 void Annotation::clearTone()
 {
     _ann->tone = -1;
     _ann->modified = 1;
+}
+
+void Annotation::clearTone2()
+{
+    _ann->tone2 = -1;
 }
 
 void Annotation::setF0(const QVector<float> &data)
@@ -248,6 +263,15 @@ const QString& Annotation::getTone() const
 {
     if (_ann->tone >= 0) {
         return _tones.at(_ann->tone);
+    } else {
+        return _empty_string;
+    }
+}
+
+const QString& Annotation::getTone2() const
+{
+    if (_ann->tone2 >= 0) {
+        return _tones.at(_ann->tone2);
     } else {
         return _empty_string;
     }

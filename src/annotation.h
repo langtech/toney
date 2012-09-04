@@ -36,6 +36,7 @@ typedef struct {
     int audio_path;     // path to the audio file containing target & frame
     int spkr;
     int tone;
+    int tone2;          // secondary tone label
     float f0[_ANN_NUM_F0_SAMPLES];
     int pitch_tracked;  // whether pitch traking is done (1) or not (0)
     int modified;       // whether annotation has been modified (1) or not (0)
@@ -66,7 +67,9 @@ public:
     void setTarget(const QString& label, double start, double end);
     void setSpeaker(const QString& spkr);
     void setTone(const QString& tone);
+    void setTone2(const QString& tone);
     void clearTone();
+    void clearTone2();
     void setF0(const QVector<float>& data);
     void clearPitch();
     void resetModificationFlag();
@@ -81,6 +84,7 @@ public:
     double getTargetEnd() const;
     const QString& getSpeaker() const;
     const QString& getTone() const;
+    const QString& getTone2() const;
     const float *getF0() const;
     QByteArray getId() const;
     bool modified() const;

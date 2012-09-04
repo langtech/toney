@@ -1,11 +1,13 @@
 #include "clusterbox.h"
 #include "ui_clusterbox.h"
+#include "com.h"
 
 ClusterBox::ClusterBox(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ClusterBox)
 {
     ui->setupUi(this);
+    COM.registerClusterBox(this);
 }
 
 ClusterBox::~ClusterBox()
@@ -19,11 +21,9 @@ Cluster *ClusterBox::getCluster(const QString &label)
         QWidget *w = ui->horizontalLayout->itemAt(i)->widget();
         Cluster *c = dynamic_cast<Cluster*>(w);
         if (c->getLabel() == label) {
-            qDebug() << label << ":" << "found";
             return c;
         }
     }
-    qDebug() << label << ":" << "none";
     return 0;
 }
 
