@@ -1,6 +1,7 @@
 #include "pool.h"
 #include "item.h"
 #include "playmenu.h"
+#include "com.h"
 
 Pool::Pool(QWidget *parent) :
     QGraphicsView(parent),
@@ -56,12 +57,21 @@ void Pool::setConfig(const Config &config)
 void Pool::clear(const AnnotationSet *anns)
 {
     foreach (Annotation ann, anns->getAnnotations()) {
-        QGraphicsItem *item = _anns.value(ann, 0);
+        Item *item = _anns.value(ann, 0);
         if (item != 0) {
             _scene.removeItem(item);
             _anns.remove(ann);
             delete item;
         }
+    }
+}
+
+void Pool::doColoring()
+{
+    QHash<Annotation,Item*>::iterator i = _anns.begin();
+    for (; i != _anns.end(); ++i) {
+        QColor c = COM.getColor(i.key().getTone2());
+        i.value()->setBackgroundColor(c);
     }
 }
 

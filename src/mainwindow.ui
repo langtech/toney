@@ -141,6 +141,7 @@
      <string>&amp;Edit</string>
     </property>
     <addaction name="action_Add_cluster"/>
+    <addaction name="action_Reclassify"/>
    </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
@@ -226,6 +227,11 @@
   <action name="action_help">
    <property name="text">
     <string>User Documentation</string>
+   </property>
+  </action>
+  <action name="action_Reclassify">
+   <property name="text">
+    <string>Reclassify</string>
    </property>
   </action>
  </widget>

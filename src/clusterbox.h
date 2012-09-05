@@ -20,6 +20,7 @@ public:
     ~ClusterBox();
 
     Cluster *getCluster(const QString& label);
+    QList<Cluster*> getClusters();
     void removeCluster(Cluster *cluster);
     int clusterIndex(QWidget *widget);
     void setConfig(const Config &config);

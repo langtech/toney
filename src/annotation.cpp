@@ -10,6 +10,7 @@ QStringList Annotation::_speakers;
 QStringList Annotation::_tones;
 QHash<_annotation_t*,int> Annotation::_ref_counter;
 QString Annotation::_empty_string;
+int Annotation::NUM_F0_SAMPLES = _ANN_NUM_F0_SAMPLES;
 
 Annotation::Annotation():
     _ann(new _annotation_t)
@@ -18,6 +19,7 @@ Annotation::Annotation():
     _ann->audio_path = -1;
     _ann->spkr = -1;
     _ann->tone = -1;
+    _ann->tone2 = -1;
     _ann->frm_start = -1.0;
     _ann->frm_end = -1.0;
     _ann->start = -1.0;
@@ -89,9 +91,10 @@ Annotation Annotation::clone()
     ann._ann->audio_path = _ann->audio_path;
     ann._ann->spkr = _ann->spkr;
     ann._ann->tone = _ann->tone;
+    ann._ann->tone2 = _ann->tone2;
     ann._ann->pitch_tracked = _ann->pitch_tracked;
     ann._ann->modified = _ann->modified;
-    for (int i=0; i < 30; ++i)
+    for (int i=0; i < NUM_F0_SAMPLES; ++i)
         ann._ann->f0[i] = _ann->f0[i];
     return ann;
 }
@@ -157,17 +160,30 @@ void Annotation::setTone(const QString& tone)
     _ann->modified = 1;
 }
 
+void Annotation::setTone2(const QString& tone)
+{
+    int idx = _tones.indexOf(tone);
+    if (idx >= 0) {
+        _ann->tone2 = idx;
+    }
+}
+
 void Annotation::clearTone()
 {
     _ann->tone = -1;
     _ann->modified = 1;
 }
 
+void Annotation::clearTone2()
+{
+    _ann->tone2 = -1;
+}
+
 void Annotation::setF0(const QVector<float> &data)
 {
-    if (data.size() < 30)
+    if (data.size() < NUM_F0_SAMPLES)
         return;
-    for (int i=0; i < 30; ++i)
+    for (int i=0; i < NUM_F0_SAMPLES; ++i)
         _ann->f0[i] = data.at(i);
     _ann->pitch_tracked = 1;
 }
@@ -252,6 +268,15 @@ const QString& Annotation::getTone() const
     }
 }
 
+const QString& Annotation::getTone2() const
+{
+    if (_ann->tone2 >= 0) {
+        return _tones.at(_ann->tone2);
+    } else {
+        return _empty_string;
+    }
+}
+
 const float* Annotation::getF0() const
 {
     if (_ann->pitch_tracked)
@@ -261,7 +286,8 @@ const float* Annotation::getF0() const
                     getAudioPath().toUtf8().data(),
                     _ann->start,
                     _ann->end,
-                    _ann->f0))
+                    _ann->f0,
+                    NUM_F0_SAMPLES))
         {
             _ann->pitch_tracked = 1;
             return _ann->f0;
@@ -321,7 +347,7 @@ void Annotation::hum()
         return;
 
     PLAYER::getInstance()->hum(
-                _ann->f0, 30, _ann->start, _ann->end);
+                _ann->f0, NUM_F0_SAMPLES, _ann->start, _ann->end);
 }
 
 bool Annotation::operator ==(const Annotation& ann) const

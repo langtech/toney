@@ -25,6 +25,7 @@ public slots:
     void on_action_Open_Directory_triggered();
     void on_action_Save_triggered();
     void on_action_Add_cluster_triggered();
+    void on_action_Reclassify_triggered();
     void on_action_Exit_triggered();
     void on_action_Show_Frame_ID_toggled(bool);
     void on_action_Show_Speaker_ID_toggled(bool);

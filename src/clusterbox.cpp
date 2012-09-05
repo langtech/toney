@@ -1,11 +1,13 @@
 #include "clusterbox.h"
 #include "ui_clusterbox.h"
+#include "com.h"
 
 ClusterBox::ClusterBox(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ClusterBox)
 {
     ui->setupUi(this);
+    COM.registerClusterBox(this);
 }
 
 ClusterBox::~ClusterBox()
@@ -18,10 +20,22 @@ Cluster *ClusterBox::getCluster(const QString &label)
     for (int i=1; i < ui->horizontalLayout->count() - 1; ++i) {
         QWidget *w = ui->horizontalLayout->itemAt(i)->widget();
         Cluster *c = dynamic_cast<Cluster*>(w);
-        if (c->getLabel() == label)
+        if (c->getLabel() == label) {
             return c;
+        }
     }
     return 0;
+}
+
+QList<Cluster*> ClusterBox::getClusters()
+{
+    QList<Cluster*> l;
+    for (int i=1; i < ui->horizontalLayout->count() - 1; ++i) {
+        QWidget *w = ui->horizontalLayout->itemAt(i)->widget();
+        Cluster *c = dynamic_cast<Cluster*>(w);
+        l.append(c);
+    }
+    return l;
 }
 
 void ClusterBox::removeCluster(Cluster *cluster)
