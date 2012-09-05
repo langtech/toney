@@ -66,7 +66,7 @@ void Pool::clear(const AnnotationSet *anns)
     }
 }
 
-void Pool::refresh()
+void Pool::doColoring()
 {
     QHash<Annotation,Item*>::iterator i = _anns.begin();
     for (; i != _anns.end(); ++i) {

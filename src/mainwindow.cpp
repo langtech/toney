@@ -75,14 +75,21 @@ void MainWindow::on_action_Reclassify_triggered()
             s.insert(ann, "");
         }
     }
+
     reclassify(s);
 
     QHash<const Annotation, QString>::iterator i = s.begin();
     for (; i != s.end(); ++i) {
         Annotation ann = i.key();
-        ann.setTone2(i.value());
+        if (ann.getTone() != i.value())
+            ann.setTone2(i.value());
     }
-    ui->poolWidget->refresh();
+
+    ui->poolWidget->doColoring();
+
+    foreach (Cluster *cluster, ui->scrollAreaWidgetContents->getClusters()) {
+        cluster->doColoring();
+    }
 }
 
 void MainWindow::on_action_Exit_triggered()

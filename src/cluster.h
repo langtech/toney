@@ -25,6 +25,7 @@ public:
     void setColor(const QColor &color);
     QColor getColor();
     void changeColor();
+    void doColoring();
     void setConfig(const Config &config);
     QSet<Annotation> annotations() const;
     int getMaxLabelWidth();

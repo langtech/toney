@@ -15,7 +15,7 @@ public:
     void addAnnotation(const Annotation& ann);
     void setConfig(const Config &config);
     void clear(const AnnotationSet *anns);
-    void refresh();
+    void doColoring();
 
 protected:
     virtual void dragEnterEvent(QDragEnterEvent *event);

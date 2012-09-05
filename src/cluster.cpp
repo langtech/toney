@@ -2,6 +2,7 @@
 #include "ui_cluster.h"
 #include "playmenu.h"
 #include "clusterbox.h"
+#include "com.h"
 
 static const char * const play_frame_xpm[] = {
     "16 16 2 1",
@@ -237,6 +238,17 @@ void Cluster::changeColor()
 {
     _next_color();
     setColor(_color);
+}
+
+void Cluster::doColoring()
+{
+    for (int i=0; i < ui->listWidget->count(); ++i) {
+        QString s = ui->listWidget->annotation(i).getTone2();
+        if (!s.isEmpty() && s != getLabel()) {
+            QColor c = COM.getColor(s);
+            ui->listWidget->item(i)->setBackgroundColor(c);
+        }
+    }
 }
 
 void Cluster::setConfig(const Config &config)
