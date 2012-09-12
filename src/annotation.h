@@ -86,6 +86,7 @@ public:
     const QString& getTone() const;
     const QString& getTone2() const;
     const float *getF0() const;
+    bool f0Computed() const;
     QByteArray getId() const;
     bool modified() const;
 

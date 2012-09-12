@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     sinewavefile.cpp \
     wrap_get_f0.cpp \
     reclassify.cpp \
-    com.cpp
+    com.cpp \
+    getf0paramsdialog.cpp
 
 HEADERS  += mainwindow.h \
     cluster.h \
@@ -64,12 +65,14 @@ HEADERS  += mainwindow.h \
     configfile.h \
     sinewavefile.h \
     toney_utils.h \
-    com.h
+    com.h \
+    getf0paramsdialog.h
 
 FORMS    += mainwindow.ui \
     cluster.ui \
     clusterbox.ui \
-    helpdialog.ui
+    helpdialog.ui \
+    getf0paramsdialog.ui
 
 unix {
     LIBS += -lsndfile

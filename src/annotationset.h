@@ -14,6 +14,7 @@ class AnnotationSet
 {
 public:
     AnnotationSet();
+    virtual ~AnnotationSet();
     virtual bool open(QString const& path);
     virtual bool save();
     virtual bool saveAs(QString const& path);
