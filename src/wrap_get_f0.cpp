@@ -31,6 +31,10 @@ static void linear_interpolation(QVector<float> &f0_samples,
     static const float E = 0.000001;
 
     int N = f0_samples.size();
+
+    if (N == 0)
+        return;
+
     int i = 0;
     float tmp_val;
 
@@ -46,10 +50,18 @@ static void linear_interpolation(QVector<float> &f0_samples,
     while (i < f0_samples.size())
         input[i++] = tmp_val;
 
-    for (i=0; input.at(i) < E; ++i);
-    tmp_val = input.at(i);
-    for (int k=0; k < i; ++k)
-        output.push_back(tmp_val);
+    for (i=0; i < N && input.at(i) < E; ++i);
+
+    if (i < N) {
+        tmp_val = input.at(i);
+        for (int k=0; k < i; ++k)
+            output.push_back(tmp_val);
+    }
+    else {
+        for (int k=0; k < N; ++k)
+            output.push_back(0.0);
+        return;
+    }
 
     while (i < N) {
         if (input.at(i) < E) {
@@ -198,10 +210,20 @@ bool get_f0_samples(
         int i1 = int(x1) * 2;
         int i2 = int(x2) * 2;
         int i3 = int(x3) * 2;
-        float vp0 = i0 >= 0 ? v.at(i0+1) : 0.0;
-        float vp1 = v.at(i1+1);
-        float vp2 = v.at(i2+1);
-        float vp3 = i3 < 60 ? v.at(i3+1) : 0.0;
+
+        float vp0, vp1, vp2, vp3;
+        if (v.size() > i3+1) {
+            vp0 = i0 >= 0 ? v.at(i0+1) : 0.0;
+            vp1 = v.at(i1+1);
+            vp2 = v.at(i2+1);
+            vp3 = i3 < 60 ? v.at(i3+1) : 0.0;
+        }
+        else {
+            vp0 = 0.0;
+            vp1 = 0.0;
+            vp2 = 0.0;
+            vp3 = 0.0;
+        }
         double y;
 
         if (vp1 < 0.5) {

@@ -5,6 +5,10 @@ AnnotationSet::AnnotationSet()
 {
 }
 
+AnnotationSet::~AnnotationSet()
+{
+}
+
 bool AnnotationSet::open(QString const& path)
 {
     _path = path;

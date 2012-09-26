@@ -37,10 +37,7 @@ void F0Display::refresh()
         QHashIterator<Annotation,F0Contour*> it(_displayed_anns);
         while (it.hasNext()) {
             it.next();
-            Annotation ann = it.key();
-            if (ann.getF0() == 0 && !ann.getAudioPath().isEmpty()) {
-                it.value()->computeF0();
-            }
+            it.value()->computeF0();
         }
     }
 }

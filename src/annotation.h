@@ -86,12 +86,16 @@ public:
     const QString& getTone() const;
     const QString& getTone2() const;
     const float *getF0() const;
+    bool f0Computed() const;
     QByteArray getId() const;
     bool modified() const;
 
     void playTarget(QAction *act=0);
     void playFrame();
     void hum();
+
+    // Returns smallest sample rate of audio files.
+    static int min_sample_rate();
 
     bool operator ==(const Annotation& ann) const;
 

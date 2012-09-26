@@ -11,6 +11,10 @@ MainWindow::MainWindow(QWidget *parent) :
     _player(this)
 {
     ui->setupUi(this);
+
+    COM.registerGetF0ParamsDialog(&_f0dialog);
+
+    connect(&_f0dialog, SIGNAL(accepted()), SLOT(redoGetF0()));
 }
 
 MainWindow::~MainWindow()
@@ -92,6 +96,11 @@ void MainWindow::on_action_Reclassify_triggered()
     }
 }
 
+void MainWindow::on_action_F0_Params_triggered()
+{
+    _f0dialog.show();
+}
+
 void MainWindow::on_action_Exit_triggered()
 {
     close();
@@ -152,6 +161,20 @@ void MainWindow::removeCluster(Cluster *cluster)
         }
 
         delete cluster;
+    }
+}
+
+void MainWindow::redoGetF0()
+{
+    if (_f0dialog.paramsChanged()) {
+        foreach (AnnotationSet *aset, _pools) {
+            foreach (Annotation ann, aset->getAnnotations()) {
+                ann.clearPitch();
+            }
+        }
+        foreach (Cluster *c, ui->scrollAreaWidgetContents->getClusters()) {
+            c->refreshF0Contour();
+        }
     }
 }
 

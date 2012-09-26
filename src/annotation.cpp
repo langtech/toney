@@ -282,20 +282,28 @@ const float* Annotation::getF0() const
     if (_ann->pitch_tracked)
         return _ann->f0;
     else {
-        if (get_f0_samples(
+        float *samples = 0;
+        get_f0_session *session = COM.newGetF0Session();
+        if (session &&
+                get_f0_samples(
                     getAudioPath().toUtf8().data(),
                     _ann->start,
                     _ann->end,
                     _ann->f0,
-                    NUM_F0_SAMPLES))
+                    NUM_F0_SAMPLES,
+                    session))
         {
             _ann->pitch_tracked = 1;
-            return _ann->f0;
+            samples = _ann->f0;
+            close_get_f0(session);
         }
-        else {
-            return 0;
-        }
+        return samples;
     }
+}
+
+bool Annotation::f0Computed() const
+{
+    return _ann->pitch_tracked == 1;
 }
 
 QByteArray Annotation::getId() const
@@ -348,6 +356,25 @@ void Annotation::hum()
 
     PLAYER::getInstance()->hum(
                 _ann->f0, NUM_F0_SAMPLES, _ann->start, _ann->end);
+}
+
+int Annotation::min_sample_rate()
+{
+    int min_val = 9999999;
+    bool changed = false;
+    foreach (QString path, _audio_paths) {
+        const char *p = path.toUtf8().constData();
+        int r = sample_rate(p);
+        if (min_val > r) {
+            min_val = r;
+            changed = true;
+        }
+    }
+
+    if (changed)
+        return min_val;
+    else
+        return -1;
 }
 
 bool Annotation::operator ==(const Annotation& ann) const

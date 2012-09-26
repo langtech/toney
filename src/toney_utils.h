@@ -18,4 +18,8 @@ bool get_f0_samples(
 
 void reclassify(QHash<const Annotation, QString>&);
 
+// Check and return the sample rate of the given audio file.
+// Returns -1 if there's an error.
+int sample_rate(const char *audio_path);
+
 #endif // UTILS_H

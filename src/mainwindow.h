@@ -7,6 +7,7 @@
 #include "config.h"
 #include "cluster.h"
 #include "helpdialog.h"
+#include "getf0paramsdialog.h"
 
 namespace Ui {
     class MainWindow;
@@ -26,6 +27,7 @@ public slots:
     void on_action_Save_triggered();
     void on_action_Add_cluster_triggered();
     void on_action_Reclassify_triggered();
+    void on_action_F0_Params_triggered();
     void on_action_Exit_triggered();
     void on_action_Show_Frame_ID_toggled(bool);
     void on_action_Show_Speaker_ID_toggled(bool);
@@ -36,6 +38,7 @@ public slots:
 
 private slots:
     void removeCluster(Cluster *cluster);
+    void redoGetF0();
 
 private:
     QString findAudio(const QString &textgrid_filename);
@@ -49,6 +52,7 @@ private:
     Config _config;
     QHash<QString,AnnotationSet*> _pools; // set of loaded annotation files
     HelpDialog _help;
+    GetF0ParamsDialog _f0dialog;
 #ifdef QTPLAYER
     QtPlayer _player;
 #else

@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GetF0ParamsDialog</class>
+ <widget class="QDialog" name="GetF0ParamsDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>374</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>F0 Range</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QSpinBox" name="param_min_f0">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="maximum">
+          <number>4000</number>
+         </property>
+         <property name="value">
+          <number>50</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="param_max_f0">
+         <property name="maximum">
+          <number>4000</number>
+         </property>
+         <property name="value">
+          <number>550</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="toolTip">
+        <string>Analysis frame step interval. Computation increases  as
+1/frame_step.  Valid  value  lies  in [1/sampling rate, 0.1].</string>
+       </property>
+       <property name="text">
+        <string>Frame Step</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QDoubleSpinBox" name="param_frame_step">
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>0.000125000000000</double>
+       </property>
+       <property name="maximum">
+        <double>0.100000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.001000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.005000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="toolTip">
+        <string>Size  of  correlation  window.   Computation  increases
+directly  as wind_dur. Valid values lie in [10/sampling
+rate, .1].  Default is 0.0075.</string>
+       </property>
+       <property name="text">
+        <string>Analysis Window Size</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QDoubleSpinBox" name="param_wind_dur">
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>0.001250000000000</double>
+       </property>
+       <property name="maximum">
+        <double>0.100000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.001000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.010000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="toolTip">
+        <string>The maximum number of correlation peaks  considered  as
+possible F0-peak candidates in any frame.  At most, the
+top n-cands candidates are considered  in  each  frame.
+The  computational  cost grows approximately as n_cands
+SQUARED.  Valid values lie in [3, 100].  Default is 20.</string>
+       </property>
+       <property name="text">
+        <string>Number of Peak Candidates</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QSpinBox" name="param_n_cands">
+       <property name="minimum">
+        <number>3</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>20</number>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="toolTip">
+        <string>Determines fixed  preference  for  voiced  or  unvoiced
+state.    Positive   numbers   encourage   the   voiced
+hypothesis, negative numbers the unvoiced. Valid values
+lie in [-1, 1].  Default is 0.0.</string>
+       </property>
+       <property name="text">
+        <string>Voice Bias</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QDoubleSpinBox" name="param_voice_bias">
+       <property name="decimals">
+        <number>3</number>
+       </property>
+       <property name="minimum">
+        <double>-1.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.005000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="toolTip">
+        <string>The cost of a rapid one-octave (up or down) F0  change.
+High  numbers  discourage any jumps, low numbers permit
+octave jumps. Valid values lie in [0, 10].  Default  is
+0.35.</string>
+       </property>
+       <property name="text">
+        <string>One Octave Change Cost</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QDoubleSpinBox" name="param_double_cost">
+       <property name="decimals">
+        <number>3</number>
+       </property>
+       <property name="maximum">
+        <double>10.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.005000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.350000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="toolTip">
+        <string>Fixed  cost  of  making  a  voicing-state   transition.
+Higher  numbers  discourage  state changes. Valid value
+lies in [0, 1].  Default is 0.005.</string>
+       </property>
+       <property name="text">
+        <string>Voicing State Transition Cost</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QDoubleSpinBox" name="param_trans_cost">
+       <property name="decimals">
+        <number>3</number>
+       </property>
+       <property name="maximum">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.005000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.020000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_8">
+       <property name="toolTip">
+        <string>Determines cross correlation peak height required for a
+peak  to  be  considered a pitch-peak candidate.  Valid
+value lies in [.01, .99].  Default is 0.3.</string>
+       </property>
+       <property name="text">
+        <string>Candidate Peak Threshold</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QDoubleSpinBox" name="param_cand_thresh">
+       <property name="decimals">
+        <number>3</number>
+       </property>
+       <property name="minimum">
+        <double>0.010000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>0.990000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.005000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.030000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="label_9">
+       <property name="toolTip">
+        <string>Amount of weight given to the shortness of the proposed
+pitch  interval.  Higher numbers make high F0 estimates
+more likely. Valid value lies in [0,  1].   Default  is 0.3.</string>
+       </property>
+       <property name="text">
+        <string>Lag Weight</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="label_10">
+       <property name="toolTip">
+        <string>Strength  of  F0  continuity.   Higher  numbers  impose
+smoother contours. Valid value lies in [0, 1].  Default
+is 0.02.</string>
+       </property>
+       <property name="text">
+        <string>Frequency Weight</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QDoubleSpinBox" name="param_lag_weight">
+       <property name="decimals">
+        <number>3</number>
+       </property>
+       <property name="maximum">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.005000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.300000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QDoubleSpinBox" name="param_freq_weight">
+       <property name="decimals">
+        <number>3</number>
+       </property>
+       <property name="maximum">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.005000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.020000000000000</double>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>GetF0ParamsDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>257</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>GetF0ParamsDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>325</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
