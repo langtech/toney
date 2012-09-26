@@ -94,6 +94,9 @@ public:
     void playFrame();
     void hum();
 
+    // Returns smallest sample rate of audio files.
+    static int min_sample_rate();
+
     bool operator ==(const Annotation& ann) const;
 
 public:

@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     wrap_get_f0.cpp \
     reclassify.cpp \
     com.cpp \
-    getf0paramsdialog.cpp
+    getf0paramsdialog.cpp \
+    sample_rate.cpp
 
 HEADERS  += mainwindow.h \
     cluster.h \

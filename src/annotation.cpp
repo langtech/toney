@@ -358,6 +358,25 @@ void Annotation::hum()
                 _ann->f0, NUM_F0_SAMPLES, _ann->start, _ann->end);
 }
 
+int Annotation::min_sample_rate()
+{
+    int min_val = 9999999;
+    bool changed = false;
+    foreach (QString path, _audio_paths) {
+        const char *p = path.toUtf8().constData();
+        int r = sample_rate(p);
+        if (min_val > r) {
+            min_val = r;
+            changed = true;
+        }
+    }
+
+    if (changed)
+        return min_val;
+    else
+        return -1;
+}
+
 bool Annotation::operator ==(const Annotation& ann) const
 {
     return ann._ann == _ann;
