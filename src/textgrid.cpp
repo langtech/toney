@@ -111,7 +111,7 @@ bool TextGrid::open(const QString &path)
         if (pat.exactMatch(t.label)) {
             ann.setTarget(pat.cap(1), t.beg, t.end);
             if (pat.cap(2) != "X")
-                ann.setTone(pat.cap(2));
+                ann.setValue(0, pat.cap(2));
 
             if (frm_i < frm_v.size()) {
                 const struct interval &frm = frm_v[frm_i];
@@ -142,7 +142,7 @@ bool TextGrid::saveAs(const QString &filename)
     foreach (const struct ann_idx& w, _offsets) {
         ts << _rawtext.mid(idx, w.offset - idx);
         QString new_label = w.ann.getTargetLabel();
-        QString tone = w.ann.getTone();
+        QString tone = w.ann.getValue(0);
         if (tone.isEmpty()) {
             new_label.append(":X");
         }

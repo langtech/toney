@@ -143,6 +143,7 @@
     <addaction name="action_Add_cluster"/>
     <addaction name="action_Reclassify"/>
     <addaction name="action_F0_Params"/>
+    <addaction name="action_Value_Position"/>
    </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
@@ -238,6 +239,11 @@
   <action name="action_F0_Params">
    <property name="text">
     <string>F0 Parameters</string>
+   </property>
+  </action>
+  <action name="action_Value_Position">
+   <property name="text">
+    <string>Value Position</string>
    </property>
   </action>
  </widget>

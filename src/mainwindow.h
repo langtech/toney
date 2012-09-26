@@ -8,6 +8,7 @@
 #include "cluster.h"
 #include "helpdialog.h"
 #include "getf0paramsdialog.h"
+#include "valuepositiondialog.h"
 
 namespace Ui {
     class MainWindow;
@@ -28,6 +29,7 @@ public slots:
     void on_action_Add_cluster_triggered();
     void on_action_Reclassify_triggered();
     void on_action_F0_Params_triggered();
+    void on_action_Value_Position_triggered();
     void on_action_Exit_triggered();
     void on_action_Show_Frame_ID_toggled(bool);
     void on_action_Show_Speaker_ID_toggled(bool);
@@ -53,6 +55,8 @@ private:
     QHash<QString,AnnotationSet*> _pools; // set of loaded annotation files
     HelpDialog _help;
     GetF0ParamsDialog _f0dialog;
+    ValuePositionDialog _valposdialog;
+
 #ifdef QTPLAYER
     QtPlayer _player;
 #else

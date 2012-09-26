@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     COM.registerGetF0ParamsDialog(&_f0dialog);
+    COM.registerGetValuePositionDialog(&_valposdialog);
 
     connect(&_f0dialog, SIGNAL(accepted()), SLOT(redoGetF0()));
 }
@@ -80,13 +81,14 @@ void MainWindow::on_action_Reclassify_triggered()
         }
     }
 
-    reclassify(s);
+    int pos = COM.valuePosition();
+    reclassify(s, pos);
 
     QHash<const Annotation, QString>::iterator i = s.begin();
     for (; i != s.end(); ++i) {
         Annotation ann = i.key();
-        if (ann.getTone() != i.value())
-            ann.setTone2(i.value());
+        if (ann.getValue(pos) != i.value())
+            ann.setValue2(pos, i.value());
     }
 
     ui->poolWidget->doColoring();
@@ -99,6 +101,11 @@ void MainWindow::on_action_Reclassify_triggered()
 void MainWindow::on_action_F0_Params_triggered()
 {
     _f0dialog.show();
+}
+
+void MainWindow::on_action_Value_Position_triggered()
+{
+    _valposdialog.show();
 }
 
 void MainWindow::on_action_Exit_triggered()
@@ -154,9 +161,10 @@ void MainWindow::removeCluster(Cluster *cluster)
                 QMessageBox::No);
 
     if (ans == QMessageBox::Yes) {
+        int pos = COM.valuePosition();
         foreach (const Annotation &ann, cluster->annotations()) {
             Annotation a(ann);
-            a.clearTone();
+            a.clearValue(pos);
             ui->poolWidget->addAnnotation(a);
         }
 
@@ -298,11 +306,13 @@ void MainWindow::_open_textgrid(const QString &filename)
         return;
     }
 
+    int pos = COM.valuePosition();
+
     foreach (const Annotation &ann, pool->getAnnotations()) {
-        if (ann.getTone().isEmpty())
+        if (ann.getValue(pos).isEmpty())
             ui->poolWidget->addAnnotation(ann);
         else {
-            QString tone = ann.getTone();
+            QString tone = ann.getValue(pos);
             Cluster *c = ui->scrollAreaWidgetContents->getCluster(tone);
             if (c == 0) {
                 c = ui->scrollAreaWidgetContents->addCluster(tone);

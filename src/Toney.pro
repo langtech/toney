@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     reclassify.cpp \
     com.cpp \
     getf0paramsdialog.cpp \
-    sample_rate.cpp
+    sample_rate.cpp \
+    valuepositiondialog.cpp
 
 HEADERS  += mainwindow.h \
     cluster.h \
@@ -67,13 +68,15 @@ HEADERS  += mainwindow.h \
     sinewavefile.h \
     toney_utils.h \
     com.h \
-    getf0paramsdialog.h
+    getf0paramsdialog.h \
+    valuepositiondialog.h
 
 FORMS    += mainwindow.ui \
     cluster.ui \
     clusterbox.ui \
     helpdialog.ui \
-    getf0paramsdialog.ui
+    getf0paramsdialog.ui \
+    valuepositiondialog.ui
 
 unix {
     LIBS += -lsndfile
