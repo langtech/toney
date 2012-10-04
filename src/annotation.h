@@ -27,7 +27,6 @@
 #define _ANN_NUM_F0_SAMPLES 30
 
 typedef struct {
-    QString label;      // label on target
     double start;       // start time on target
     double end;         // end time on target
     QString frm_label;  // label on frame (sentence; parent of the target)
@@ -66,6 +65,8 @@ public:
     void setAudioPath(const QString& audio_path);
     void setFrame(const QString& label, double start, double end);
     void setTarget(const QString& label, double start, double end);
+    void setTargetStart(double start);
+    void setTargetEnd(double end);
     void setSpeaker(const QString& spkr);
     void setValue(int pos, const QString &value);
     void setValue2(int pos, const QString &value);
@@ -86,6 +87,8 @@ public:
     const QString& getSpeaker() const;
     const QString &getValue(int pos) const;
     const QString &getValue2(int pos) const;
+    QStringList getValues() const;
+    QStringList getValues2() const;
     const float *getF0() const;
     bool f0Computed() const;
     QByteArray getId() const;

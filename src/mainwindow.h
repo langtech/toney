@@ -41,6 +41,7 @@ public slots:
 private slots:
     void removeCluster(Cluster *cluster);
     void redoGetF0();
+    void redoClusters();
 
 private:
     QString findAudio(const QString &textgrid_filename);
@@ -56,6 +57,7 @@ private:
     HelpDialog _help;
     GetF0ParamsDialog _f0dialog;
     ValuePositionDialog _valposdialog;
+    int _old_pos; // old value position
 
 #ifdef QTPLAYER
     QtPlayer _player;

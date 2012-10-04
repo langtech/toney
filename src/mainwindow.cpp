@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     COM.registerGetValuePositionDialog(&_valposdialog);
 
     connect(&_f0dialog, SIGNAL(accepted()), SLOT(redoGetF0()));
+    connect(&_valposdialog, SIGNAL(accepted()), SLOT(redoClusters()));
 }
 
 MainWindow::~MainWindow()
@@ -105,6 +106,7 @@ void MainWindow::on_action_F0_Params_triggered()
 
 void MainWindow::on_action_Value_Position_triggered()
 {
+    _old_pos = _valposdialog.getPosition();
     _valposdialog.show();
 }
 
@@ -182,6 +184,33 @@ void MainWindow::redoGetF0()
         }
         foreach (Cluster *c, ui->scrollAreaWidgetContents->getClusters()) {
             c->refreshF0Contour();
+        }
+    }
+}
+
+void MainWindow::redoClusters()
+{
+    int pos = _valposdialog.getPosition();
+    if (pos != _old_pos) {
+        ClusterBox *cbox = ui->scrollAreaWidgetContents;
+        foreach (Cluster *cluster, cbox->getClusters())
+            cbox->removeCluster(cluster);
+        foreach (AnnotationSet *pool, _pools.values()) {
+            ui->poolWidget->clear(pool);
+            foreach (const Annotation &ann, pool->getAnnotations()) {
+                QString cluster_label = ann.getValue(pos);
+                if (cluster_label.isEmpty())
+                    ui->poolWidget->addAnnotation(ann);
+                else {
+                    Cluster *c = cbox->getCluster(cluster_label);
+                    if (c == 0) {
+                        c = cbox->addCluster(cluster_label);
+                        connect(c, SIGNAL(clusterRemovalRequested(Cluster*)),
+                                SLOT(removeCluster(Cluster*)));
+                    }
+                    c->addAnnotation(ann);
+                }
+            }
         }
     }
 }

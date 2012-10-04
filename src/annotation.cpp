@@ -79,7 +79,6 @@ Annotation& Annotation::operator =(const Annotation& ann)
 Annotation Annotation::clone()
 {
     Annotation ann;
-    ann._ann->label = _ann->label;
     ann._ann->start = _ann->start;
     ann._ann->end = _ann->end;
     ann._ann->frm_label = _ann->frm_label;
@@ -133,8 +132,18 @@ void Annotation::setFrame(const QString& label, double start, double end)
 
 void Annotation::setTarget(const QString& label, double start, double end)
 {
-    _ann->label = label;
+    setValue(0, label);
     _ann->start = start;
+    _ann->end = end;
+}
+
+void Annotation::setTargetStart(double start)
+{
+    _ann->start = start;
+}
+
+void Annotation::setTargetEnd(double end)
+{
     _ann->end = end;
 }
 
@@ -234,7 +243,7 @@ double Annotation::getFrameEnd() const
 
 const QString& Annotation::getTargetLabel() const
 {
-    return _ann->label;
+    return getValue(0);
 }
 
 // Returns -1.0 if the time is not set
@@ -274,6 +283,28 @@ const QString &Annotation::getValue2(int pos) const
         return _values.at(index);
     else
         return _empty_string;
+}
+
+QStringList Annotation::getValues() const
+{
+    QStringList list;
+    QList<int> keys = _ann->values.keys();
+    qSort(keys);
+    int n = keys.last();
+    for (int i=0; i <= n; ++i)
+        list << getValue(i);
+    return list;
+}
+
+QStringList Annotation::getValues2() const
+{
+    QStringList list;
+    QList<int> keys = _ann->values2.keys();
+    qSort(keys);
+    int n = keys.last();
+    for (int i=0; i <= n; ++i)
+        list << getValue2(i);
+    return list;
 }
 
 const float* Annotation::getF0() const

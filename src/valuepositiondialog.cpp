@@ -4,9 +4,10 @@
 ValuePositionDialog::ValuePositionDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ValuePositionDialog),
-    _pos(0)
+    _pos(1)
 {
     ui->setupUi(this);
+    ui->position->setValue(_pos);
 }
 
 ValuePositionDialog::~ValuePositionDialog()
