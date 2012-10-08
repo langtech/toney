@@ -93,7 +93,6 @@ bool TextGrid::open(const QString &path)
     int spkr_i = 0;
     const QVector<struct interval> &frm_v = layers["frame"];
     const QVector<struct interval> &spkr_v = layers["speaker"];
-    QRegExp pat("(.*):(.*)");
 
     foreach (const struct interval &t, layers["target"]) {
         if (t.label.isEmpty())

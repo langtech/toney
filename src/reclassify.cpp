@@ -31,7 +31,7 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
         // ann.getTargetLabel()  -- word label
         // ann.getTargetStart()  -- start offset for the word
         // ann.getTargetEnd()    -- end offset for the word
-        // ann.getTone()         -- cluster label
+        // ann.getValue(int pos) -- cluster label
 
         QString cluster = ann.getValue(pos);
         float v = sum_f0_samples(ann);

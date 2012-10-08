@@ -191,6 +191,7 @@ void MainWindow::redoGetF0()
 void MainWindow::redoClusters()
 {
     int pos = _valposdialog.getPosition();
+    ui->valPos->setText(QString("%1").arg(pos));
     if (pos != _old_pos) {
         ClusterBox *cbox = ui->scrollAreaWidgetContents;
         foreach (Cluster *cluster, cbox->getClusters())
