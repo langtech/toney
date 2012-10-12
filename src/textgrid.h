@@ -27,8 +27,13 @@ public:
     bool saveAs(const QString &filename);
 
 private:
+    bool detect_encoding(QFile *file);
+
+private:
     QString _rawtext;
     QVector<struct ann_idx> _offsets;
+    QTextCodec *_codec;
+    QString _codec_name;
 };
 
 #endif // TEXTGRID_H
