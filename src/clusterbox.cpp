@@ -126,8 +126,8 @@ void ClusterBox::dropEvent(QDropEvent *event)
                 break;
             }
         }
-        if (!((curidx == idx) ||      // dropped in a spece on the left edge
-              (curidx == idx - 1))) { // dropped in a space on thr right edge
+        if (!((curidx == idx) ||      // dropped in a space on the left edge
+              (curidx == idx - 1))) { // dropped in a space on the right edge
             QLayoutItem *item = ui->horizontalLayout->takeAt(curidx);
             if (item) {
                 if (curidx < idx)

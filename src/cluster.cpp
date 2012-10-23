@@ -324,7 +324,7 @@ void Cluster::dropEvent(QDropEvent *event)
     if (event->source() == 0) {
         event->setDropAction(Qt::IgnoreAction);
     }
-    else if (event->source() == this) {
+    else if (event->source() == ui->listWidget) {
         event->setDropAction(Qt::IgnoreAction);
     }
     else if (event->mimeData()->hasFormat("Annotation")) {
