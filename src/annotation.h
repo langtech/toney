@@ -6,6 +6,7 @@
 #include <tonesexception.h>
 #include <QUrl>
 #include <QAction>
+#include <QVector>
 #if defined(QTPLAYER)
 #include "qtplayer.h"
 #define PLAYER QtPlayer
@@ -26,7 +27,6 @@
 #define _ANN_NUM_F0_SAMPLES 30
 
 typedef struct {
-    QString label;      // label on target
     double start;       // start time on target
     double end;         // end time on target
     QString frm_label;  // label on frame (sentence; parent of the target)
@@ -35,8 +35,8 @@ typedef struct {
     int ann_path;       // path to the annotation file
     int audio_path;     // path to the audio file containing target & frame
     int spkr;
-    int tone;
-    int tone2;          // secondary tone label
+    QHash<int,int> values;
+    QHash<int,int> values2;
     float f0[_ANN_NUM_F0_SAMPLES];
     int pitch_tracked;  // whether pitch traking is done (1) or not (0)
     int modified;       // whether annotation has been modified (1) or not (0)
@@ -65,11 +65,13 @@ public:
     void setAudioPath(const QString& audio_path);
     void setFrame(const QString& label, double start, double end);
     void setTarget(const QString& label, double start, double end);
+    void setTargetStart(double start);
+    void setTargetEnd(double end);
     void setSpeaker(const QString& spkr);
-    void setTone(const QString& tone);
-    void setTone2(const QString& tone);
-    void clearTone();
-    void clearTone2();
+    void setValue(int pos, const QString &value);
+    void setValue2(int pos, const QString &value);
+    void clearValue(int pos);
+    void clearValue2(int pos);
     void setF0(const QVector<float>& data);
     void clearPitch();
     void resetModificationFlag();
@@ -83,8 +85,10 @@ public:
     double getTargetStart() const;
     double getTargetEnd() const;
     const QString& getSpeaker() const;
-    const QString& getTone() const;
-    const QString& getTone2() const;
+    const QString &getValue(int pos) const;
+    const QString &getValue2(int pos) const;
+    QStringList getValues() const;
+    QStringList getValues2() const;
     const float *getF0() const;
     bool f0Computed() const;
     QByteArray getId() const;
@@ -106,7 +110,7 @@ private:
     static QStringList _ann_paths;
     static QStringList _audio_paths;
     static QStringList _speakers;
-    static QStringList _tones;
+    static QStringList _values;
     static QHash<_annotation_t*,int>  _ref_counter;
     static QString _empty_string;
     _annotation_t *_ann;

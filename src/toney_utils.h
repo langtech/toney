@@ -16,7 +16,8 @@ bool get_f0_samples(
         get_f0_session *session = 0
         );
 
-void reclassify(QHash<const Annotation, QString>&);
+
+void reclassify(QHash<const Annotation, QString> &s, int pos = 0);
 
 // Check and return the sample rate of the given audio file.
 // Returns -1 if there's an error.

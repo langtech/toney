@@ -16,6 +16,11 @@ void Com::registerGetF0ParamsDialog(GetF0ParamsDialog *dialog)
     _f0dialog = dialog;
 }
 
+void Com::registerGetValuePositionDialog(ValuePositionDialog *dialog)
+{
+    _valposdialog = dialog;
+}
+
 QColor Com::getColor(const QString &toneLabel)
 {
     if (_cb) {
@@ -32,6 +37,11 @@ get_f0_session *Com::newGetF0Session()
         return _f0dialog->newGetF0Session();
     else
         return 0;
+}
+
+int Com::valuePosition() const
+{
+    return _valposdialog->getPosition();
 }
 
 Com COM;

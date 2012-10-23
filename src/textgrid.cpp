@@ -93,7 +93,6 @@ bool TextGrid::open(const QString &path)
     int spkr_i = 0;
     const QVector<struct interval> &frm_v = layers["frame"];
     const QVector<struct interval> &spkr_v = layers["speaker"];
-    QRegExp pat("(.*):(.*)");
 
     foreach (const struct interval &t, layers["target"]) {
         if (t.label.isEmpty())
@@ -108,23 +107,26 @@ bool TextGrid::open(const QString &path)
             spkr_i++;
         }
         Annotation ann;
-        if (pat.exactMatch(t.label)) {
-            ann.setTarget(pat.cap(1), t.beg, t.end);
-            if (pat.cap(2) != "X")
-                ann.setTone(pat.cap(2));
 
-            if (frm_i < frm_v.size()) {
-                const struct interval &frm = frm_v[frm_i];
-                ann.setFrame(frm.label, frm.beg, frm.end);
-            }
-            if (spkr_i < spkr_v.size())
-                ann.setSpeaker(spkr_v[spkr_i].label);
-
-            _anns.insert(ann);
-
-            struct ann_idx aidx = {t.cbeg, t.clen, ann};
-            _offsets.push_back(aidx);
+        QStringList values = t.label.split(QRegExp("\\s*:\\s*"));
+        int pos = 0;
+        foreach (QString val, values) {
+            ann.setValue(pos++, val);
         }
+        ann.setTargetStart(t.beg);
+        ann.setTargetEnd(t.end);
+
+        if (frm_i < frm_v.size()) {
+            const struct interval &frm = frm_v[frm_i];
+            ann.setFrame(frm.label, frm.beg, frm.end);
+        }
+        if (spkr_i < spkr_v.size())
+            ann.setSpeaker(spkr_v[spkr_i].label);
+
+        _anns.insert(ann);
+
+        struct ann_idx aidx = {t.cbeg, t.clen, ann};
+        _offsets.push_back(aidx);
     }
 
     resetModificationFlag();
@@ -141,16 +143,7 @@ bool TextGrid::saveAs(const QString &filename)
     int idx = 0;
     foreach (const struct ann_idx& w, _offsets) {
         ts << _rawtext.mid(idx, w.offset - idx);
-        QString new_label = w.ann.getTargetLabel();
-        QString tone = w.ann.getTone();
-        if (tone.isEmpty()) {
-            new_label.append(":X");
-        }
-        else {
-            new_label.append(":");
-            new_label.append(tone);
-        }
-        ts << new_label;
+        ts << w.ann.getValues().join(":");
         idx = w.offset + w.length;
     }
     ts << _rawtext.mid(idx);

@@ -22,7 +22,21 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,0">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1,0,0,0">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Value Position:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="valPos">
+        <property name="text">
+         <string>1</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
@@ -35,6 +49,13 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Amplitude</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QSlider" name="volumeSlider">
@@ -143,6 +164,7 @@
     <addaction name="action_Add_cluster"/>
     <addaction name="action_Reclassify"/>
     <addaction name="action_F0_Params"/>
+    <addaction name="action_Value_Position"/>
    </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
@@ -238,6 +260,11 @@
   <action name="action_F0_Params">
    <property name="text">
     <string>F0 Parameters</string>
+   </property>
+  </action>
+  <action name="action_Value_Position">
+   <property name="text">
+    <string>Value Position</string>
    </property>
   </action>
  </widget>

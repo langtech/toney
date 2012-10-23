@@ -77,9 +77,7 @@ Cluster *ClusterBox::addCluster()
 
 Cluster *ClusterBox::addCluster(const QString& label)
 {
-    Cluster *c = new Cluster(this);
-    int idx = ui->horizontalLayout->count() - 1;
-    ui->horizontalLayout->insertWidget(idx, c);
+    Cluster *c = addCluster();
     c->setLabel(label);
     return c;
 }

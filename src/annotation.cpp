@@ -7,7 +7,7 @@
 QStringList Annotation::_ann_paths;
 QStringList Annotation::_audio_paths;
 QStringList Annotation::_speakers;
-QStringList Annotation::_tones;
+QStringList Annotation::_values;
 QHash<_annotation_t*,int> Annotation::_ref_counter;
 QString Annotation::_empty_string;
 int Annotation::NUM_F0_SAMPLES = _ANN_NUM_F0_SAMPLES;
@@ -18,8 +18,6 @@ Annotation::Annotation():
     _ann->ann_path = -1;
     _ann->audio_path = -1;
     _ann->spkr = -1;
-    _ann->tone = -1;
-    _ann->tone2 = -1;
     _ann->frm_start = -1.0;
     _ann->frm_end = -1.0;
     _ann->start = -1.0;
@@ -81,7 +79,6 @@ Annotation& Annotation::operator =(const Annotation& ann)
 Annotation Annotation::clone()
 {
     Annotation ann;
-    ann._ann->label = _ann->label;
     ann._ann->start = _ann->start;
     ann._ann->end = _ann->end;
     ann._ann->frm_label = _ann->frm_label;
@@ -90,8 +87,11 @@ Annotation Annotation::clone()
     ann._ann->ann_path = _ann->ann_path;
     ann._ann->audio_path = _ann->audio_path;
     ann._ann->spkr = _ann->spkr;
-    ann._ann->tone = _ann->tone;
-    ann._ann->tone2 = _ann->tone2;
+    QHash<int,int>::iterator i;
+    for (i = _ann->values.begin(); i != _ann->values.end(); ++i)
+        ann._ann->values[i.key()] = i.value();
+    for (i = _ann->values2.begin(); i != _ann->values2.end(); ++i)
+        ann._ann->values2[i.key()] = i.value();
     ann._ann->pitch_tracked = _ann->pitch_tracked;
     ann._ann->modified = _ann->modified;
     for (int i=0; i < NUM_F0_SAMPLES; ++i)
@@ -132,8 +132,18 @@ void Annotation::setFrame(const QString& label, double start, double end)
 
 void Annotation::setTarget(const QString& label, double start, double end)
 {
-    _ann->label = label;
+    setValue(0, label);
     _ann->start = start;
+    _ann->end = end;
+}
+
+void Annotation::setTargetStart(double start)
+{
+    _ann->start = start;
+}
+
+void Annotation::setTargetEnd(double end)
+{
     _ann->end = end;
 }
 
@@ -148,35 +158,33 @@ void Annotation::setSpeaker(const QString& spkr)
     }
 }
 
-void Annotation::setTone(const QString& tone)
+void Annotation::setValue(int pos, const QString &value)
 {
-    int idx = _tones.indexOf(tone);
+    int idx = _values.indexOf(value);
     if (idx >= 0) {
-        _ann->tone = idx;
-    } else {
-        _ann->tone = _tones.size();
-        _tones.append(tone);
+        _ann->values[pos] = idx;
     }
-    _ann->modified = 1;
-}
-
-void Annotation::setTone2(const QString& tone)
-{
-    int idx = _tones.indexOf(tone);
-    if (idx >= 0) {
-        _ann->tone2 = idx;
+    else {
+        _ann->values[pos] = _values.size();
+        _values.append(value);
     }
 }
 
-void Annotation::clearTone()
+void Annotation::setValue2(int pos, const QString &value)
 {
-    _ann->tone = -1;
-    _ann->modified = 1;
+    int idx = _values.indexOf(value);
+    if (idx >= 0)
+        _ann->values2[pos] = idx;
 }
 
-void Annotation::clearTone2()
+void Annotation::clearValue(int pos)
 {
-    _ann->tone2 = -1;
+    _ann->values.remove(pos);
+}
+
+void Annotation::clearValue2(int pos)
+{
+    _ann->values2.remove(pos);
 }
 
 void Annotation::setF0(const QVector<float> &data)
@@ -235,7 +243,7 @@ double Annotation::getFrameEnd() const
 
 const QString& Annotation::getTargetLabel() const
 {
-    return _ann->label;
+    return getValue(0);
 }
 
 // Returns -1.0 if the time is not set
@@ -259,22 +267,44 @@ const QString& Annotation::getSpeaker() const
     }
 }
 
-const QString& Annotation::getTone() const
+const QString &Annotation::getValue(int pos) const
 {
-    if (_ann->tone >= 0) {
-        return _tones.at(_ann->tone);
-    } else {
+    int index = _ann->values.value(pos, -1);
+    if (index >= 0)
+        return _values.at(index);
+    else
         return _empty_string;
-    }
 }
 
-const QString& Annotation::getTone2() const
+const QString &Annotation::getValue2(int pos) const
 {
-    if (_ann->tone2 >= 0) {
-        return _tones.at(_ann->tone2);
-    } else {
+    int index = _ann->values2.value(pos, -1);
+    if (index >= 0)
+        return _values.at(index);
+    else
         return _empty_string;
-    }
+}
+
+QStringList Annotation::getValues() const
+{
+    QStringList list;
+    QList<int> keys = _ann->values.keys();
+    qSort(keys);
+    int n = keys.last();
+    for (int i=0; i <= n; ++i)
+        list << getValue(i);
+    return list;
+}
+
+QStringList Annotation::getValues2() const
+{
+    QStringList list;
+    QList<int> keys = _ann->values2.keys();
+    qSort(keys);
+    int n = keys.last();
+    for (int i=0; i <= n; ++i)
+        list << getValue2(i);
+    return list;
 }
 
 const float* Annotation::getF0() const

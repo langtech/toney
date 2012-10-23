@@ -190,8 +190,10 @@ Cluster::~Cluster()
 
 void Cluster::addAnnotation(const Annotation &ann)
 {
-    if (ann.getTone() != getLabel())
-        Annotation(ann).setTone(ui->lineEdit->text());
+    int pos = COM.valuePosition();
+
+    if (ann.getValue(pos) != getLabel())
+        Annotation(ann).setValue(pos, ui->lineEdit->text());
 
     QListWidgetItem *item = new QListWidgetItem(_item_label(ann));
     item->setData(Qt::UserRole, QVariant::fromValue<Annotation>(ann));
@@ -211,8 +213,9 @@ void Cluster::setLabel(const QString& label)
     // make it unique if necessary
     QString new_label = _mk_unique(label);
     ui->lineEdit->setText(new_label);
+    int pos = COM.valuePosition();
     for (int i=0; i < ui->listWidget->count(); ++i) {
-        ui->listWidget->annotation(i).setTone(new_label);
+        ui->listWidget->annotation(i).setValue(pos, new_label);
     }
 }
 
@@ -242,8 +245,9 @@ void Cluster::changeColor()
 
 void Cluster::doColoring()
 {
+    int pos = COM.valuePosition();
     for (int i=0; i < ui->listWidget->count(); ++i) {
-        QString s = ui->listWidget->annotation(i).getTone2();
+        QString s = ui->listWidget->annotation(i).getValue2(pos);
         if (!s.isEmpty() && s != getLabel()) {
             QColor c = COM.getColor(s);
             ui->listWidget->item(i)->setBackgroundColor(c);

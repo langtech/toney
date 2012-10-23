@@ -14,7 +14,8 @@ static float sum_f0_samples(const Annotation &ann)
 
 // Param s: A hash of Annotations. The values are empty string. The reclassify
 //   function should update the values to an appropriate cluster label.
-void reclassify(QHash<const Annotation,QString> &s)
+// Param pos: A position in the values vector.
+void reclassify(QHash<const Annotation,QString> &s, int pos)
 {
     QHash<QString,float> cluster_mean;
     QHash<QString,int> cluster_num_samples;
@@ -30,9 +31,9 @@ void reclassify(QHash<const Annotation,QString> &s)
         // ann.getTargetLabel()  -- word label
         // ann.getTargetStart()  -- start offset for the word
         // ann.getTargetEnd()    -- end offset for the word
-        // ann.getTone()         -- cluster label
+        // ann.getValue(int pos) -- cluster label
 
-        QString cluster = ann.getTone();
+        QString cluster = ann.getValue(pos);
         float v = sum_f0_samples(ann);
         if (cluster != "") {
             cluster_mean[cluster] += v;
