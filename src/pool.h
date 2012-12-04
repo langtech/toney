@@ -15,6 +15,7 @@ public:
     void addAnnotation(const Annotation& ann);
     void setConfig(const Config &config);
     void clear(const AnnotationSet *anns);
+    void doColoring();
 
 protected:
     virtual void dragEnterEvent(QDragEnterEvent *event);
@@ -26,7 +27,7 @@ protected:
     virtual void contextMenuEvent(QContextMenuEvent *event);
 
 private:
-    QHash<Annotation,QGraphicsItem*> _anns;
+    QHash<Annotation,Item*> _anns;
     // _anns: dictionary holding all Annotations and corresponding scene
     //        items. Used only for efficient tracking
     QGraphicsScene _scene;

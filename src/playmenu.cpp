@@ -5,9 +5,13 @@ PlayMenu::PlayMenu(const Annotation &ann, QWidget *parent) :
     QMenu(parent),
     _ann(ann)
 {
-    addAction("Play target");
-    addAction("Play frame");
-    addAction("Melody");
+    _act_play_target = addAction("Play target");
+    _act_play_frame = addAction("Play frame");
+    _act_play_melody = addAction("Melody");
+
+    if (ann.getFrameLabel().trimmed().isEmpty())
+        _act_play_frame->setEnabled(false);
+
     connect(this, SIGNAL(triggered(QAction*)), SLOT(on_triggered(QAction*)));
 }
 
@@ -17,7 +21,8 @@ void PlayMenu::on_triggered(QAction *action)
         _ann.playTarget();
     }
     else if (action->text() == "Play frame") {
-        _ann.playFrame();
+        if (!_ann.getFrameLabel().trimmed().isEmpty())
+            _ann.playFrame();
     }
     else if (action->text() == "Melody") {
         _ann.hum();

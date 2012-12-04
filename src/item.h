@@ -10,6 +10,10 @@ class Item : public QGraphicsTextItem
 public:
     Item();
     ~Item();
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionGraphicsItem *option,
+                       QWidget *widget);
+    void setBackgroundColor(const QColor &color);
     const QPixmap *screenshot();
 
 protected:
@@ -20,6 +24,7 @@ protected:
 private:
     void _make_screen_shot();
     QPixmap *_screenshot;
+    QColor _color;
 
 };
 

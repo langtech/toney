@@ -3,7 +3,8 @@
 #include <QDrag>
 
 Item::Item():
-    _screenshot(0)
+    _screenshot(0),
+    _color(255,255,255,0)
 {
     this->setDefaultTextColor(Qt::black);
 }
@@ -12,6 +13,21 @@ Item::~Item()
 {
     if (_screenshot != 0)
         delete _screenshot;
+}
+
+void Item::paint(
+        QPainter *painter,
+        const QStyleOptionGraphicsItem *option,
+        QWidget *widget)
+{
+    painter->fillRect(boundingRect(), _color);
+    QGraphicsTextItem::paint(painter, option, widget);
+}
+
+void Item::setBackgroundColor(const QColor &color)
+{
+    _color = color;
+    update(boundingRect());
 }
 
 const QPixmap *Item::screenshot()

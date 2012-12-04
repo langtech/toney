@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QtGui>
 #include "textgrid.h"
+#include "toney_utils.h"
 #include <sndfile.h>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -10,6 +11,12 @@ MainWindow::MainWindow(QWidget *parent) :
     _player(this)
 {
     ui->setupUi(this);
+
+    COM.registerGetF0ParamsDialog(&_f0dialog);
+    COM.registerGetValuePositionDialog(&_valposdialog);
+
+    connect(&_f0dialog, SIGNAL(accepted()), SLOT(redoGetF0()));
+    connect(&_valposdialog, SIGNAL(accepted()), SLOT(redoClusters()));
 }
 
 MainWindow::~MainWindow()
@@ -66,6 +73,43 @@ void MainWindow::on_action_Add_cluster_triggered()
             SLOT(removeCluster(Cluster*)));
 }
 
+void MainWindow::on_action_Reclassify_triggered()
+{
+    QHash<const Annotation, QString> s;
+    foreach (AnnotationSet* aset, _pools.values()) {
+        foreach (Annotation ann, aset->getAnnotations()) {
+            s.insert(ann, "");
+        }
+    }
+
+    int pos = COM.valuePosition();
+    reclassify(s, pos);
+
+    QHash<const Annotation, QString>::iterator i = s.begin();
+    for (; i != s.end(); ++i) {
+        Annotation ann = i.key();
+        if (ann.getValue(pos) != i.value())
+            ann.setValue2(pos, i.value());
+    }
+
+    ui->poolWidget->doColoring();
+
+    foreach (Cluster *cluster, ui->scrollAreaWidgetContents->getClusters()) {
+        cluster->doColoring();
+    }
+}
+
+void MainWindow::on_action_F0_Params_triggered()
+{
+    _f0dialog.show();
+}
+
+void MainWindow::on_action_Value_Position_triggered()
+{
+    _old_pos = _valposdialog.getPosition();
+    _valposdialog.show();
+}
+
 void MainWindow::on_action_Exit_triggered()
 {
     close();
@@ -119,13 +163,56 @@ void MainWindow::removeCluster(Cluster *cluster)
                 QMessageBox::No);
 
     if (ans == QMessageBox::Yes) {
+        int pos = COM.valuePosition();
         foreach (const Annotation &ann, cluster->annotations()) {
             Annotation a(ann);
-            a.clearTone();
+            a.clearValue(pos);
             ui->poolWidget->addAnnotation(a);
         }
 
         delete cluster;
+    }
+}
+
+void MainWindow::redoGetF0()
+{
+    if (_f0dialog.paramsChanged()) {
+        foreach (AnnotationSet *aset, _pools) {
+            foreach (Annotation ann, aset->getAnnotations()) {
+                ann.clearPitch();
+            }
+        }
+        foreach (Cluster *c, ui->scrollAreaWidgetContents->getClusters()) {
+            c->refreshF0Contour();
+        }
+    }
+}
+
+void MainWindow::redoClusters()
+{
+    int pos = _valposdialog.getPosition();
+    ui->valPos->setText(QString("%1").arg(pos));
+    if (pos != _old_pos) {
+        ClusterBox *cbox = ui->scrollAreaWidgetContents;
+        foreach (Cluster *cluster, cbox->getClusters())
+            cbox->removeCluster(cluster);
+        foreach (AnnotationSet *pool, _pools.values()) {
+            ui->poolWidget->clear(pool);
+            foreach (const Annotation &ann, pool->getAnnotations()) {
+                QString cluster_label = ann.getValue(pos);
+                if (cluster_label.isEmpty())
+                    ui->poolWidget->addAnnotation(ann);
+                else {
+                    Cluster *c = cbox->getCluster(cluster_label);
+                    if (c == 0) {
+                        c = cbox->addCluster(cluster_label);
+                        connect(c, SIGNAL(clusterRemovalRequested(Cluster*)),
+                                SLOT(removeCluster(Cluster*)));
+                    }
+                    c->addAnnotation(ann);
+                }
+            }
+        }
     }
 }
 
@@ -249,11 +336,13 @@ void MainWindow::_open_textgrid(const QString &filename)
         return;
     }
 
+    int pos = COM.valuePosition();
+
     foreach (const Annotation &ann, pool->getAnnotations()) {
-        if (ann.getTone().isEmpty())
+        if (ann.getValue(pos).isEmpty())
             ui->poolWidget->addAnnotation(ann);
         else {
-            QString tone = ann.getTone();
+            QString tone = ann.getValue(pos);
             Cluster *c = ui->scrollAreaWidgetContents->getCluster(tone);
             if (c == 0) {
                 c = ui->scrollAreaWidgetContents->addCluster(tone);

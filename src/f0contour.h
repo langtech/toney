@@ -3,9 +3,6 @@
 
 #include <QtGui>
 #include <annotation.h>
-extern "C" {
-    #include <get_f0/f0.h>
-}
 
 class F0Contour : public QGraphicsPathItem
 {
@@ -30,7 +27,6 @@ private:
     QPen _pen_hover;
     QPen _pen;
     bool _highlighted;
-    get_f0_session *_f0_session;
 };
 
 #endif // F0CONTOUR_H
