@@ -2,12 +2,13 @@
 #define PLAYER_H
 
 #include <QObject>
+#include <QPointer>
 
 class Player : public QObject
 {
     Q_OBJECT
 public:
-    static Player *getInstance(QObject *parent=0);
+    static QPointer<Player> getInstance(QObject *parent=0);
     virtual void play(const QString& path, double start, double end) = 0;
     virtual void hum(float *f0_samples, int n, double start, double end) = 0;
     virtual void stop() = 0;
@@ -26,7 +27,7 @@ protected:
 
 protected:
     static int _volume_level;
-    static Player *_instance;
+    static QPointer<Player> _instance;
 };
 
 #endif // PLAYER_H

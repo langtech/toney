@@ -1,9 +1,9 @@
 #include "player.h"
 
 int Player::_volume_level = 0;
-Player *Player::_instance = 0;
+QPointer<Player> Player::_instance = 0;
 
-Player *Player::getInstance(QObject *parent)
+QPointer<Player> Player::getInstance(QObject *parent)
 {
     Q_UNUSED(parent);
     return _instance;

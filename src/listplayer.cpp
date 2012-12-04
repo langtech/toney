@@ -15,7 +15,8 @@ ListPlayer::ListPlayer(QObject *parent) :
 
 ListPlayer::~ListPlayer()
 {
-    _player->stop();
+    if (_player)
+        _player->stop();
 }
 
 void ListPlayer::setList(TargetList *list)
