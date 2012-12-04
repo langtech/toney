@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.9.1: http://docutils.sourceforge.net/" />
 <title>File Format</title>
 <link rel="stylesheet" href="html4css1.css" type="text/css" />
 </head>
@@ -11,27 +11,42 @@
 <div class="document" id="file-format">
 <h1 class="title">File Format</h1>
 
-<p>Toney works with the Praat TextGrid format.  It requires a &quot;target&quot; tier, and optionally uses
-&quot;frame&quot; and &quot;speaker&quot; tiers.  Examples of the file format are available for download.
-The target tier contains transcriptions of the tokens of interest.
-Transcriptions consist of a segmental component and a category (&quot;X&quot; for unknown), separated by colon.
-Toney only considers the labels that contain this colon; other labels are ignored.</p>
-<p>For example, a target tier might contain the following sequence of word labels: <tt class="docutils literal">muta paroma:X kidenu</tt>.
-In this case, only the second item <tt class="docutils literal">paroma</tt> would be displayed.  If the user created a
-class called LMH (low-mid-high), then the TextGrid file would be modified to contain
+<p>Toney works with the Praat TextGrid format.  It requires a &quot;target&quot; tier, and
+optionally uses &quot;frame&quot; and &quot;speaker&quot; tiers.  Examples of the file format are
+available for download.  The target tier contains transcriptions of the tokens
+of interest.  Transcriptions consist of positional values separated by colon.
+The first value represents the token and used by the tool to display it.  The
+rest of the value positions are defined by the user.  For example, the second
+position could be a tone category, the third, speaker gender, and so on. User
+can select the value position from a tool menu, and the tool would create
+clusters (categories) based on the values at the specified position.</p>
+<p>For example, a target tier might contain the following sequence of word labels:
+<tt class="docutils literal">muta paroma kidenu</tt>.  In this case, the tool would create 3 items with no
+class.  If the user created a cluster called LMH (low-mid-high) and added
+<tt class="docutils literal">paroma</tt> to that cluster, then the TextGrid file would be modified to contain
 <tt class="docutils literal">muta paroma:LMH kidenu</tt>.</p>
-<p>As another example, a target tier might contain the following sequence of syllable labels: <tt class="docutils literal">mu ta pa:L ro:X ma:H ki de nu</tt>.
-In this case, only the sylables <tt class="docutils literal">pa</tt>, <tt class="docutils literal">ro</tt>, and <tt class="docutils literal">ma</tt> would be displayed.
-Two categories <tt class="docutils literal">L</tt> and <tt class="docutils literal">H</tt> would be populated with <tt class="docutils literal">pa</tt> and <tt class="docutils literal">ma</tt> respectively.
-However, <tt class="docutils literal">ro</tt> would be displayed without any category.  If the user created a new <tt class="docutils literal">M</tt> category,
-and moved all three syllables into this category, then the TextGrid file would be
-modified to contain <tt class="docutils literal">mu ta pa:M ro:M ma:M ki de nu</tt>.</p>
-<p>The optional frame tier is used to delimit a larger span of recorded material that contains the
-(sentence) frame in which the target form was elicited (e.g. <tt class="docutils literal">F1</tt> for Frame 1).
-The optional frame tier is used to provide a speaker identifier, such as initials (e.g. <tt class="docutils literal">PT</tt>).
-The <tt class="docutils literal">View</tt> menu can be used to toggle the display of this extra information.
-Thus, a token <tt class="docutils literal">paroma</tt> could appear as <tt class="docutils literal"><span class="pre">paroma-F1-PT</span></tt> in the display,
-enabling the user to study variability due to the elicitation frame or the speaker.</p>
+<p>As another example, a target tier might contain the following sequence of
+syllable labels: <tt class="docutils literal">mu ta pa:L ro:L:male ma:H <span class="pre">ki::female</span> de nu</tt>.  In this case,
+the tool would create 8 items. Five syllables <tt class="docutils literal">mu</tt>, <tt class="docutils literal">ta</tt>, <tt class="docutils literal">ki</tt>, <tt class="docutils literal">de</tt>
+and <tt class="docutils literal">nu</tt> would be displayed with no cluster.  Two clusters would be created:
+<tt class="docutils literal">L</tt> and <tt class="docutils literal">H</tt>. The <tt class="docutils literal">L</tt> cluster would be populated by <tt class="docutils literal">pa</tt> and <tt class="docutils literal">ro</tt>, and
+the <tt class="docutils literal">H</tt>, by <tt class="docutils literal">ma</tt>. If the user created a new <tt class="docutils literal">M</tt> category, and moved all 3
+syllables in those clusters into this category, then the TextGrid file would be
+modified to contain <tt class="docutils literal">mu ta pa:M ro:M:male ma:M <span class="pre">ki::female</span> de nu</tt>.</p>
+<p>Continuing from the previous example, the user could select a new value
+position from the <tt class="docutils literal">Edit <span class="pre">-&gt;</span> Value Position</tt> manu. The default value position
+is 1 which means the second values of the colon separated transcripts. If the
+user selected the value position 2, the tool would still display 8 items. Two
+clusters would be created. Six syllables would be displayed with no cluster.
+One syllable <tt class="docutils literal">ro</tt> would be displayed inside the <tt class="docutils literal">male</tt> cluster, and one
+syllable <tt class="docutils literal">ki</tt> would be displayed inside the <tt class="docutils literal">female</tt> cluster.</p>
+<p>The optional frame tier is used to delimit a larger span of recorded material
+that contains the (sentence) frame in which the target form was elicited (e.g.
+<tt class="docutils literal">F1</tt> for Frame 1).  The optional frame tier is used to provide a speaker
+identifier, such as initials (e.g. <tt class="docutils literal">PT</tt>).  The <tt class="docutils literal">View</tt> menu can be used to
+toggle the display of this extra information.  Thus, a token <tt class="docutils literal">paroma</tt> could
+appear as <tt class="docutils literal"><span class="pre">paroma-F1-PT</span></tt> in the display, enabling the user to study
+variability due to the elicitation frame or the speaker.</p>
 </div>
 </body>
 </html>

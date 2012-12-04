@@ -1,5 +1,7 @@
-QHELPGENERATOR = /h/QtSDK/Desktop/Qt/4.8.1/gcc/bin/qhelpgenerator
-QCOLLECTIONGEN = /h/QtSDK/Desktop/Qt/4.8.1/gcc/bin/qcollectiongenerator
+QTBIN = /Users/haejoong/QtSDK/Desktop/Qt/4.8.1/gcc/bin
+QHELPGENERATOR = $(QTBIN)/qhelpgenerator
+QCOLLECTIONGEN = $(QTBIN)/qcollectiongenerator
+RST2HTML = rst2html-2.7.py
 RST = index.rst file_format.rst user_interface.rst license.rst credits.rst
 CSS = html4css1.css
 
@@ -10,7 +12,7 @@ toney.qch: toney.qhp $(RST:.rst=.html) $(CSS)
 	$(QHELPGENERATOR) $< -o $@
 
 %.html: %.rst
-	rst2html --stylesheet=$(CSS) --link-stylesheet $< > $@
+	$(RST2HTML) --stylesheet=$(CSS) --link-stylesheet $< > $@
 
 clean:
 	rm -rvf $(RST:.rst=.html)
