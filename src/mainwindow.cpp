@@ -324,12 +324,13 @@ void MainWindow::_open_textgrid(const QString &filename)
     _pools.insert(filename, pool);
 
     if (!pool->open(filename)) {
+        QString msg("Failed to open the file.\n"
+                    "Please check whether the file exists and\n"
+                    "is well formatted.\n\n%1");
         QMessageBox::critical(
                     this,
                     "File open error",
-                    "Failed to open the file.\n"
-                    "Please check whether the file exists and\n"
-                    "is well formatted."
+                    msg.arg(filename)
                     );
         _pools.remove(filename);
         delete pool;

@@ -2,7 +2,8 @@
 #include <QRegExp>
 
 TextGrid::TextGrid():
-    AnnotationSet()
+    AnnotationSet(),
+    _codec(0)
 {
 }
 
@@ -13,11 +14,16 @@ bool TextGrid::open(const QString &path)
         return false;
     }
 
+    if (!detect_encoding(&file)) {
+        file.close();
+        return false;
+    }
+
     _anns.clear();
     _offsets.clear();
     _path = path;
 
-    _rawtext = QString::fromUtf8(file.readAll());
+    _rawtext = _codec->toUnicode(file.readAll());
     QRegExp p_item("\\s+item\\s*\\[\\d+\\]\\s*:");
     QRegExp p_name("\\s+name\\s*=\\s*\"([^\"]+)\"");
     QRegExp p_interval("\\s+intervals\\s+");
@@ -140,6 +146,13 @@ bool TextGrid::saveAs(const QString &filename)
         return false;
     }
     QTextStream ts(&file);
+    if (_codec) {
+        ts.setCodec(_codec);
+        if (_codec_name != "UTF-8")
+            // must be one of the utf-16 encodings
+            // then write a BOM (this is not necessary)
+            ts.setGenerateByteOrderMark(true);
+    }
     int idx = 0;
     foreach (const struct ann_idx& w, _offsets) {
         ts << _rawtext.mid(idx, w.offset - idx);
@@ -149,4 +162,33 @@ bool TextGrid::saveAs(const QString &filename)
     ts << _rawtext.mid(idx);
     resetModificationFlag();
     return true;
+}
+
+bool TextGrid::detect_encoding(QFile *file)
+{
+    QByteArray data(file->readAll());
+    file->seek(0);
+
+    QTextDecoder *decoder;
+
+    QStringList encodings;
+    encodings << "UTF-8";
+    encodings << "UTF-16";
+    encodings << "UTF-16LE";
+    encodings << "UTF-16BE";
+    bool detected = false;
+    foreach (QString encoding, encodings) {
+        _codec = QTextCodec::codecForName(encoding.toUtf8());
+        decoder = _codec->makeDecoder(QTextCodec::ConvertInvalidToNull);
+        QString text = decoder->toUnicode(data);
+        delete decoder;
+        if (text.indexOf(QChar('\0')) < 0) {
+            detected = true;
+            _codec_name = encoding;
+            break;
+        }
+        _codec = 0;
+        _codec_name = "";
+    }
+    return detected;
 }
