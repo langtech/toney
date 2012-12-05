@@ -41,4 +41,3 @@ identifier, such as initials (e.g. ``PT``).  The ``View`` menu can be used to
 toggle the display of this extra information.  Thus, a token ``paroma`` could
 appear as ``paroma-F1-PT`` in the display, enabling the user to study
 variability due to the elicitation frame or the speaker.
-
