@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.9.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.10: http://docutils.sourceforge.net/" />
 <title>User Interface</title>
 <link rel="stylesheet" href="html4css1.css" type="text/css" />
 </head>
@@ -11,32 +11,42 @@
 <div class="document" id="user-interface">
 <h1 class="title">User Interface</h1>
 
-<p>The user interface is divided into two regions.  The lower area is a
-canvas containing unclassified linguistic forms.  You can double-click
-on an item to hear it, and drag it so that it is closer to items that
-sound similar.  The forms can be clustered according to any phonetic
-category of interest.</p>
-<p>Once a putative category has been identified, use the <tt class="docutils literal">edit</tt> menu to
-create a cluster.  Give the cluster a label, and drag forms into it.
-Create as many clusters as desired.  Click on the small play button at
-the bottom of the cluster to listen to all items in the cluster in
-sequence.  Any items that do not belong in the cluster can be moved
-out of it.</p>
-<p>If the forms were collected using an elicitation frame, where these
-are indicated using the &quot;frame&quot; tier in the TextGrid file, then the
-display of frame labels can be turned on and off using the <tt class="docutils literal">view</tt>
-menu.  If a speaker identifier is indicated using the &quot;speaker&quot; tier
-in the TextGrid file, then this can also be controlled using the <tt class="docutils literal">view</tt> menu.
-To listen to forms with the frame, use right-click (on the canvas)
-or the large play button (at the bottom of the cluster box).</p>
-<p>To delete a cluster and return any items it contains to the canvas,
-click on the <tt class="docutils literal">X</tt> button.</p>
-<p>Click on the F0 tab to see the F0 traces for the items in the cluster.
-When switching between the <tt class="docutils literal">label</tt> and <tt class="docutils literal">F0</tt> tab, the highlighted
-form stays the same.  Thus, any outlying F0 trace can be easily associated with
-the corresponding form, and it can be moved out of the cluster.</p>
-<p>Click on the border area of a cluster to pick up the cluster and drag it to
-a new position.</p>
+<p>The user interface is divided into two regions.  The lower area is a canvas
+containing unclassified linguistic forms.  You can double-click on an item to
+hear it, and drag it so that it is closer to items that sound similar.  The
+forms can be clustered according to any phonetic category of interest.</p>
+<p>Once a putative category has been identified, use the <tt class="docutils literal">edit</tt> menu to create a
+cluster.  Give the cluster a label, and drag forms into it.  Create as many
+clusters as desired.  Click on the small play button at the bottom of the
+cluster to listen to all items in the cluster in sequence.  Any items that do
+not belong in the cluster can be moved out of it.</p>
+<p>The tool allows multiple catetory types. Each catetory type corresponds to a
+position in a colon-delimited value list explained in the File Format section.
+For example, value position 1 can be tone category, and value position 2 can
+be speaker gender. Value position is displayed on the top right corner of the
+tool and can be changed from the Edit menu. When the value position is changed,
+the clusters will be recreated based on the catetories in the category type.</p>
+<p>If the forms were collected using an elicitation frame, where these are
+indicated using the &quot;frame&quot; tier in the TextGrid file, then the display of
+frame labels can be turned on and off using the <tt class="docutils literal">view</tt> menu.  If a speaker
+identifier is indicated using the &quot;speaker&quot; tier in the TextGrid file, then
+this can also be controlled using the <tt class="docutils literal">view</tt> menu.  To listen to forms with
+the frame, use right-click (on the canvas) or the large play button (at the
+bottom of the cluster box).</p>
+<p>To delete a cluster and return any items it contains to the canvas, click on
+the <tt class="docutils literal">X</tt> button.</p>
+<p>Click on the F0 tab to see the F0 traces for the items in the cluster.  When
+switching between the <tt class="docutils literal">label</tt> and <tt class="docutils literal">F0</tt> tab, the highlighted form stays the
+same.  Thus, any outlying F0 trace can be easily associated with the
+corresponding form, and it can be moved out of the cluster.</p>
+<p>How F0 traces are generated is controlled by a set of parameters. These
+parameters can be adjusted from the Edit -&gt; F0 Parameters menu. Move mouse over
+a parameter label, and an explanation of the parameter will be displayed.</p>
+<p>Click on the border area of a cluster to pick up the cluster and drag it to a
+new position.</p>
+<p>The amplitude widget on the top right corner of the tool allows to change the
+aplitude of the loaded waveforms. However, it doesn't change the global audio
+volume.</p>
 </div>
 </body>
 </html>
