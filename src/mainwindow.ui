@@ -123,8 +123,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>796</width>
-          <height>71</height>
+          <width>792</width>
+          <height>76</height>
          </rect>
         </property>
         <property name="mouseTracking">
@@ -143,7 +143,7 @@
      <x>0</x>
      <y>0</y>
      <width>818</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -253,6 +253,9 @@
    </property>
   </action>
   <action name="action_Reclassify">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Reclassify</string>
    </property>
