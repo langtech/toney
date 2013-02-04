@@ -80,7 +80,7 @@ qint64 AudioFile::readData(char *data, qint64 maxlen)
     if (frames > _region_frames)
         frames = _region_frames;
 
-    short tmp[frames * _sfinfo.channels];
+    short *tmp = new short[frames * _sfinfo.channels];
 
     sf_count_t n = sf_readf_short(_sndfile, tmp, frames);
 
@@ -98,10 +98,11 @@ qint64 AudioFile::readData(char *data, qint64 maxlen)
 
     // apply multiplier
     for (int i=0; i < n * _sfinfo.channels; ++i)
-        ((short*)data)[i] = round(multiplier * tmp[i]);
+        ((short*)data)[i] = (int) (multiplier * tmp[i] + 0.5);
 
     _counter += n;
 
+    delete[] tmp;
     return n * sizeof(short) * _sfinfo.channels;
 }
 
