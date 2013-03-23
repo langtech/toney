@@ -115,16 +115,17 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     }
 
     /*Q Convert data_rows QList into a NumericMatrix suitable to put into R */
+    /* Because of the way matrix filling works, need to make the transpose */
     int k_rows = data_rows.size();
     int k_cols = c_labels.size() + Annotation::NUM_F0_SAMPLES;
-    Rcpp::NumericMatrix K(k_rows, k_cols);
+    Rcpp::NumericMatrix K(k_cols, k_rows); // transpose
 
     int k_size = k_rows * k_cols;
     int kk = 0;
 
     QList<AnnDataRow>::iterator d_i = data_rows.begin();
     for (; d_i != data_rows.end(); ++d_i) {
-        // Put each data row into a row of the matrix
+        // Put each data row into a column of the transposed matrix
         for (int c_i = 0; c_i < c_labels.size(); ++c_i) {
             // Figure out which column to fill for cluster label
             if (label_nos.value((*d_i).label) == c_i) {
@@ -142,7 +143,8 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     }
 
     // convert to an R data frame
-    (*R)["f0data"] = K;
+    (*R)["f0data_t"] = K;
+    (*R).parseEvalQ("f0data = t(f0data_t);");
     // TODO strip zero rows
 
     std::string rcommand;
@@ -154,6 +156,8 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     // print for debugging std::cout << rcommand << std::endl;
     (*R).parseEvalQ(rcommand);
 
+    (*R).parseEvalQ("print(f0df);");
+
     // train a model
     rcommand = "library(\"pls\");"
                "model=plsr(tones~obs, data=f0df, validation=\"CV\");"; // TODO: is CV needed? or LOO?
@@ -163,7 +167,35 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
 
     // iterate through annotations and assign a cluster label to them */
 
-    /*H below here */
+    for (i = s.begin(); i != s.end(); ++i) {
+        // take a single annotation, put it through the model
+        const Annotation ann = i.key();
+        const float *r_f0 = ann.getF0();
+        Rcpp::NumericMatrix A(1, Annotation::NUM_F0_SAMPLES);
+        for (int r_i = 0; r_i < Annotation::NUM_F0_SAMPLES; ++r_i) {
+            A[r_i] = r_f0[r_i];
+        }
+        (*R)["newrow"] = A;
+        (*R).parseEvalQ("print(newrow);");
+        rcommand = "new = predict(model, ncomp=model$ncomp, newdata=newrow);";
+        (*R).parseEvalQ(rcommand);
+        (*R).parseEvalQ("print(new);");
+
+        /*
+        for (; c != cluster_mean.end(); ++c) {
+            const Annotation ann = i.key();
+            float wm = word_mean[ann];  // word mean
+            float cm = c.value();       // cluster mean
+            float diff = fabsf(wm - cm);
+            if (diff < 1.0) {
+                //qDebug() << ann.getTargetLabel() << ann.getTone() << "-->" << c.key();
+                i.value() = c.key();
+            }
+        }
+        */
+    }
+
+    /*H below here
 
     foreach (QString cluster, cluster_mean.keys())
         cluster_mean[cluster] /= cluster_num_samples[cluster];
@@ -181,4 +213,5 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
             }
         }
     }
+    */
 }
