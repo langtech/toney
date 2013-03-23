@@ -25,6 +25,24 @@ static float sum_f0_samples(const Annotation &ann)
 }
 */
 
+bool single_value(Rcpp::NumericVector v) {
+    bool found_one = false;
+    for (int i = 0; i < v.size(); i++) {
+        if (v[i] > 0) {
+            if (found_one) {
+                return false; // more than one >0
+            }
+            else {
+                found_one = true;
+            }
+        }
+    }
+    if (found_one == false) { // no >0s
+        return false;
+    }
+    return true;
+}
+
 // Param s: A hash of Annotations. The values are empty string. The reclassify
 //   function should update the values to an appropriate cluster label.
 // Param pos: A position in the values vector.
@@ -185,7 +203,20 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
         ans = (*R).parseEval("new");
         Rcpp::NumericVector n(ans);
         std::cout << std::to_string(n[0]) << " " << std::to_string(n[1]) << std::endl;
-        for (int t_i = 0; t_i < c_labels.size(); ++t_i) {
+        int last_one = -1;
+        for (int t_i = 0; t_i < n.size(); ++t_i) {
+            // TODO: judge a score/threshold
+            n[t_i] = floor(n[t_i]+0.5);
+            if (n[t_i] > 0) {
+                last_one = t_i;
+            }
+        }
+        // if there's more than one predicted value, leave it alone
+        // otherwise, assign to the single predicted value
+        if (single_value(n)) {
+//            QString new_label = label_nos.key(last_one);
+            std::cout << "new label: " << label_nos.key(last_one).toStdString() << std::endl;
+            i.value() = label_nos.key(last_one);
         }
 
         /*
