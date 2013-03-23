@@ -143,16 +143,23 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
 
     // convert to an R data frame
     (*R)["f0data"] = K;
+    // TODO strip zero rows
 
     std::string rcommand;
 
-    rcommand = std::string("f0df = data.frame(tones=I(as.matrix(f0data[1:") +
-               std::to_string(c_labels.size()) + "])), contour=I(as.matrix(f0data[" +
+    rcommand = std::string("f0df = data.frame(tones=I(as.matrix(f0data[,1:") +
+               std::to_string(c_labels.size()) + "])), obs=I(as.matrix(f0data[," +
                std::to_string(c_labels.size()+1) + ":" + std::to_string(k_cols) +
                "])));";
-    std::cout << rcommand << std::endl;
+    // print for debugging std::cout << rcommand << std::endl;
+    (*R).parseEvalQ(rcommand);
 
     // train a model
+    rcommand = "library(\"pls\");"
+               "model=plsr(tones~obs, data=f0df, validation=\"CV\");"; // TODO: is CV needed? or LOO?
+    (*R).parseEvalQ(rcommand);
+    (*R).parseEvalQ("print(\"built model\");");
+
 
     // iterate through annotations and assign a cluster label to them */
 
