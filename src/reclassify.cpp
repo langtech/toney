@@ -181,6 +181,13 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
         (*R).parseEvalQ(rcommand);
         (*R).parseEvalQ("print(new);");
 
+        // get the result back from R and parse it in C++
+        ans = (*R).parseEval("new");
+        Rcpp::NumericVector n(ans);
+        std::cout << std::to_string(n[0]) << " " << std::to_string(n[1]) << std::endl;
+        for (int t_i = 0; t_i < c_labels.size(); ++t_i) {
+        }
+
         /*
         for (; c != cluster_mean.end(); ++c) {
             const Annotation ann = i.key();
