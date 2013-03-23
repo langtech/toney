@@ -57,10 +57,10 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     QHash<const Annotation,float> word_mean;
 
     /*Q Goal:
-     * - Iterate over all the annotations
+     * - Iterate over all the annotations / yup
      * - For each annotation, if it's unclustered, ignore it
      * - Else if it's in a cluster, grab its cluster number and all its data
-     * -- Put them into a matrix
+     * -- Put them into a matrix /yup
      *
      * - Use the matrix to build a model
      * - Iterate over the annotations again and use the model to predict
@@ -177,8 +177,15 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     (*R).parseEvalQ("print(f0df);");
 
     // train a model
-    rcommand = "library(\"pls\");"
-               "model=plsr(tones~obs, data=f0df, validation=\"CV\");"; // TODO: is CV needed? or LOO?
+    rcommand = "library(\"pls\");";
+    (*R).parseEvalQ(rcommand);
+    if (k_rows >= 10) {
+        rcommand = "model=plsr(tones~obs, data=f0df, validation=\"CV\");";
+    }
+    else {
+        rcommand = "model=plsr(tones~obs, data=f0df, validation=\"LOO\");";
+    }
+                // TODO: CV uses 10 by default, so breaks if there are fewer than 10 observations; change it to LOO in that case
     (*R).parseEvalQ(rcommand);
     (*R).parseEvalQ("print(\"built model\");");
 
@@ -233,23 +240,4 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
         */
     }
 
-    /*H below here
-
-    foreach (QString cluster, cluster_mean.keys())
-        cluster_mean[cluster] /= cluster_num_samples[cluster];
-
-    for (i = s.begin(); i != s.end(); ++i) {
-        QHash<QString,float>::iterator c = cluster_mean.begin();
-        for (; c != cluster_mean.end(); ++c) {
-            const Annotation ann = i.key();
-            float wm = word_mean[ann];  // word mean
-            float cm = c.value();       // cluster mean
-            float diff = fabsf(wm - cm);
-            if (diff < 1.0) {
-                //qDebug() << ann.getTargetLabel() << ann.getTone() << "-->" << c.key();
-                i.value() = c.key();
-            }
-        }
-    }
-    */
 }
