@@ -1,8 +1,17 @@
 #include <QtGui/QApplication>
 #include "mainwindow.h"
+#include "RInside.h"
+#include "Rcpp.h"
+
+#include "rinstance.h"
+
+RInside *R;
 
 int main(int argc, char *argv[])
 {
+
+    R = new RInside(argc, argv);
+
     qRegisterMetaTypeStreamOperators<Annotation>("Annotation");
 
     QApplication a(argc, argv);

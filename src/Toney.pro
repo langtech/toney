@@ -69,7 +69,8 @@ HEADERS  += mainwindow.h \
     toney_utils.h \
     com.h \
     getf0paramsdialog.h \
-    valuepositiondialog.h
+    valuepositiondialog.h \
+    rinstance.h
 
 FORMS    += mainwindow.ui \
     cluster.ui \
@@ -77,6 +78,23 @@ FORMS    += mainwindow.ui \
     helpdialog.ui \
     getf0paramsdialog.ui \
     valuepositiondialog.ui
+
+
+R_HOME =    $$system(R RHOME)
+RCPPFLAGS = $$system($$R_HOME/bin/R CMD config --cppflags)
+RLDFLAGS =  $$system($$R_HOME/bin/R CMD config --ldflags)
+RBLAS =     $$system($$R_HOME/bin/R CMD config BLAS_LIBS)
+RLAPACK =   $$system($$R_HOME/bin/R CMD config LAPACK_LIBS)
+RCPPINCL =  $$system($$R_HOME/bin/Rscript -e \'Rcpp:::CxxFlags\(\)\')
+RCPPLIBS =  $$system($$R_HOME/bin/Rscript -e \'Rcpp:::LdFlags\(\)\')
+RCPPWARNING =   -Wno-unused-parameter
+RINSIDEINCL =   $$system($$R_HOME/bin/Rscript -e \'RInside:::CxxFlags\(\)\')
+RINSIDELIBS =   $$system($$R_HOME/bin/Rscript -e \'RInside:::LdFlags\(\)\')
+QMAKE_CXXFLAGS +=   $$RCPPWARNING $$RCPPFLAGS $$RCPPINCL $$RINSIDEINCL
+QMAKE_LFLAGS +=     $$RLDFLAGS $$RBLAS $$RLAPACK $$RCPPLIBS $$RINSIDELIBS
+
+# for to_string to work
+QMAKE_CXXFLAGS +=   -std=c++0x
 
 unix {
     LIBS += -lsndfile
