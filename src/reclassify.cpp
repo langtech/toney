@@ -43,6 +43,27 @@ bool single_value(Rcpp::NumericVector v) {
     return true;
 }
 
+static bool passed_threshold(float threshold, Rcpp::NumericVector res) {
+    // Score how close res is to the rounded result and return whether it passed the threshold
+    float score = 0.0;
+    int rounded;
+    for (int t_i = 0; t_i < res.size(); ++t_i) {
+        rounded = floor(res[t_i]+0.5);
+        if (rounded > 1) {
+            rounded = 1;
+        }
+        else if (rounded < 0) {
+            rounded = 0;
+        } // Binary values - make them 0 or 1. Max squared difference will be 1
+        score += (rounded - res[t_i]) * (rounded - res[t_i]); // sum of squared differences
+    }
+    score = score / res.size(); // normalize score by number of components
+    if (score < threshold) {
+        return true;
+    }
+    return false;
+}
+
 // Param s: A hash of Annotations. The values are empty string. The reclassify
 //   function should update the values to an appropriate cluster label.
 // Param pos: A position in the values vector.
@@ -51,6 +72,8 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
 
     /* R session is already open and named R, from rinstance.h */
     SEXP ans;
+
+    //const float threshold = 0.5; // Threshold for scoring; want the score to be under this threshold
 
     QHash<QString,float> cluster_mean;
     QHash<QString,int> cluster_num_samples;
@@ -138,7 +161,7 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     int k_cols = c_labels.size() + Annotation::NUM_F0_SAMPLES;
     Rcpp::NumericMatrix K(k_cols, k_rows); // transpose
 
-    int k_size = k_rows * k_cols;
+    // int k_size = k_rows * k_cols;
     int kk = 0;
 
     QList<AnnDataRow>::iterator d_i = data_rows.begin();
@@ -179,13 +202,15 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     // train a model
     rcommand = "library(\"pls\");";
     (*R).parseEvalQ(rcommand);
+    
+    // CV uses 10 by default, so breaks if there are fewer than 10 observations;
+    // change it to LOO in that case
     if (k_rows >= 10) {
         rcommand = "model=plsr(tones~obs, data=f0df, validation=\"CV\");";
     }
     else {
         rcommand = "model=plsr(tones~obs, data=f0df, validation=\"LOO\");";
     }
-                // TODO: CV uses 10 by default, so breaks if there are fewer than 10 observations; change it to LOO in that case
     (*R).parseEvalQ(rcommand);
     (*R).parseEvalQ("print(\"built model\");");
 
