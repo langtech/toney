@@ -1,0 +1,91 @@
+Early elicitation and classification of tone
+
+Steven Bird, Haejoong Lee, Quynh-Chi Nguyen
+
+Abstract
+
+Studying a tone language involves careful transcription of
+tone on words and phrases. This is challenging when the
+phonological categories -- the tones or melodies -- have not been
+identified. Effects such as coarticulation, sandhi, and phrase-level
+prosody appear as obstacles to early elicitation and classification
+of tone. This article presents an approach to this problem along
+with supporting software, an open source tool called Toney.
+After users categorise spoken words and phrases, the software
+automatically generalises from these examples and helps with
+the classification of new items using partial least-squares regression.
+We illustrate the approach with examples from Mandarin Chinese
+and from Alekano, a tone language from Papua New Guinea.
+
+1. Introduction
+
+The early stages of describing a language are often confusing.
+We elicit words and phrases and try to transcribe the
+tone, but we don't know the salient categories yet. Our transcription
+practice evolves as we tune into the relevant contrasts, but we have
+to always be ready to revise our practice. For segmental contrasts,
+it is usually straightforward to begin with narrow phonetic transcriptions
+and slowly leave out details that are found to be non-contrastive.
+For instance, after noting that voiceless obstruents are aspirated in
+syllable onset position, we may decide to stop marking aspiration. Over time,
+transcription proceeds more quickly. Yet all the time, we try to
+remain open to detecting new contrasts (REFS, cf Hyman 2001).
+
+The situation seems to be generally more acute for tone. The IPA tone notation is
+cumbersome, and involves
+five levels with the corresponding contours. In my own experience, it
+has been more effective to draw stylized contours, e.g [-_/].
+It can be hard to distinguish the tone on a short syllable in context.
+We may use elicitation frames, but we have to be alert to the possibility that
+these may effect the target word in ways we do not yet understand.
+Or we may work with words in isolation, though this may invoke phrase-level
+prosody, since the isolated word must be prosodically well-formed as
+a phrase and as an utterance.
+Other prosodic effects get in the way, such as
+downtrends, phrase-boundary effects, tonal coarticulation, intrinsic vowel F0.
+Eyeballing F0 traces often doesn't help: too much noise.
+
+In short, we are trying to uncover discrete tonal categories like High and Low,
+without knowing much about the function which gave them their observable phonetic realization.
+When we detect a small pitch difference between consecutive syllables, we can't
+be sure whether this points to an underlying contrast, or whether it is just
+a case of tonal coarticulation. After a while, perhaps a week or a month, our
+language acquisition device has become engaged, and we begin to ``hear'' the tone.
+
+We set ourselves the goal of speeding up this process, and making it more easy and
+reliable.
+
+2. Phonetic realization of tone [SB]
+
+* series of diagrams: what we might hope for, and what we actually get
+* cite some literature on learning the parameters, e.g. Shih and Kochanski
+
+3. Liberman approach [QN + SB]
+
+* Functional PCA -- layman's understanding of what it is doing; Aston paper
+* introduce the Mandarin example and show some of the steps
+* critique: manual process of inspecting contours and removing factors
+
+4. Toney [HL + SB]
+
+* interface, screenshot
+* file format
+* manual iterative approach to learning the clusters and extending them
+* doing this automatically (behaviour with automatic classification)
+* how the automatic method works
+
+5. Conclusion
+
+* findings
+* future prospects
+
+
+
+
+
+References
+
+Hyman, Larry M (2001). Fieldwork as a state of mind.  In Paul Newman
+  and Martha Ratliff (eds). Linguistic Fieldwork.  Cambridge
+  University Press.
+
