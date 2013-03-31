@@ -21,7 +21,30 @@ and from Alekano, a tone language from Papua New Guinea.
 
 The early stages of describing a language are often confusing.
 We elicit words and phrases and try to transcribe the
-tone, but we don't know the salient categories yet. Our transcription
+tone, but we don't know the salient categories yet.
+
+(1) gènēzá àní'gùvè (geneza-F1.wav)
+    I saw (a) tongue
+
+The target word gènēzá appears to have a rising sequence, which
+we have transcribed as LMH. However, the position of the mid between
+L and H is suspicious: perhaps it is really a low tone that has been
+raised in the context of H, in which case we may want to view this as
+a two tone system, and write instead:
+
+(2) genezá aní'guve
+
+Or we may want to revise our assumption that there is one tone per syllable.
+In fact, we may instead consider the inventory of melodies on three-syllable
+words. We soo
+
+(3) golání aní'guve
+    I saw blood
+
+The point is, we need to write something down, but anything we write down
+is going to be provisional.
+
+Our transcription
 practice evolves as we tune into the relevant contrasts, but we have
 to always be ready to revise our practice. For segmental contrasts,
 it is usually straightforward to begin with narrow phonetic transcriptions
