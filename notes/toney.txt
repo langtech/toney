@@ -19,27 +19,45 @@ and from Alekano, a tone language from Papua New Guinea.
 
 1. Introduction
 
-The early stages of describing a language are often confusing.
+Early elicitation of tone data is often quite disorienting.
 We elicit words and phrases and try to transcribe the
 tone, but we don't know the salient categories yet.
 
-(1) gènēzá àní'gùvè (geneza-F1.wav)
-    I saw (a) tongue
+(1) gènēzá àní'gùvè  (I saw (a) tongue)
 
 The target word gènēzá appears to have a rising sequence, which
-we have transcribed as LMH. However, the position of the mid between
-L and H is suspicious: perhaps it is really a low tone that has been
+we have transcribed as low-mid-high. However, the position of the mid between
+L and H is immediately suspicious: perhaps it is really a low tone that has been
 raised in the context of H, in which case we may want to view this as
-a two tone system, and write instead:
+a two tone system, and write instead genezá aní'guve (leaving low tone unmarked),
+and positing a phonetic implementation rule L->M/L_H.
 
-(2) genezá aní'guve
+After further elicitation we build up a picture of the inventory of tonal melodies on words with a fixed syllable shape, in this case CVCVCV words:
 
-Or we may want to revise our assumption that there is one tone per syllable.
-In fact, we may instead consider the inventory of melodies on three-syllable
-words. We soo
+(2)
+a.  LLH  genezá aní'guve  (I saw tongue)
+b.  LHH  golání aní'guve  (I saw blood)
+c.  LHL  gosíha aní'guve  (I saw snake)
+d.  HLH  lágahá aní'guve  (I saw fish)
 
-(3) golání aní'guve
-    I saw blood
+Further possibilities for these words show up when we add a suffix.
+
+(3)
+a.  LLL  geneza-má aní'guve  (I saw the tongue)
+b.  LHH  golání-má aní'guve  (I saw the blood)
+c.  LHL  gosíha-má aní'guve  (I saw the snake)
+d.  HLL  lágaha-má aní'guve  (I saw the fish)
+
+Here, the final syllable of (3a) and (3d) becomes L, and we could posit a rule
+H->L/L_#H. The phonetic rule which raises this L seems to be variable,
+and we get both level and rising variants, e.g. geneza-F2, geneza-F2b.
+
+Questions:
+
+* how reliable are these conclusions?
+* want a clean "division of labour" between phonology and phonetics
+* trying to unpack both at the same time.
+
 
 The point is, we need to write something down, but anything we write down
 is going to be provisional.
