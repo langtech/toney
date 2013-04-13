@@ -5,12 +5,12 @@
 
 #include "rinstance.h"
 
-RInside *R;
+RInside *RR;
 
 int main(int argc, char *argv[])
 {
 
-    R = new RInside(argc, argv);
+    RR = new RInside(argc, argv);
 
     qRegisterMetaTypeStreamOperators<Annotation>("Annotation");
 
