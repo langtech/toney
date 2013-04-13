@@ -94,7 +94,8 @@ QMAKE_CXXFLAGS +=   $$RCPPWARNING $$RCPPFLAGS $$RCPPINCL $$RINSIDEINCL
 QMAKE_LFLAGS +=     $$RLDFLAGS $$RBLAS $$RLAPACK $$RCPPLIBS $$RINSIDELIBS
 
 # for to_string to work
-QMAKE_CXXFLAGS +=   -std=c++0x
+# shouldn't need this now
+# QMAKE_CXXFLAGS +=   -std=c++0x
 
 unix {
     LIBS += -lsndfile
