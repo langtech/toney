@@ -299,7 +299,11 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
 //            QString new_label = label_nos.key(last_one);
 //            std::cout << "new label: " << label_nos.key(last_one).toStdString() << std::endl;
 //            i.value() = label_nos.key(last_one);
-            new_labels[ann] = {label_nos.key(last_one), score};
+            ScoreInfo new_score;
+            new_score.new_label = label_nos.key(last_one);
+            new_score.score = score;
+            //new_labels[ann] = {label_nos.key(last_one), score};
+            new_labels.insert(ann, new_score);
         }
 
 
@@ -311,6 +315,16 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
         }
         else {
             threshold = scores[scores.size()-1];
+        }
+
+        QHash<const Annotation, ScoreInfo>::iterator score_iter = new_labels.begin();
+        for (; score_iter != new_labels.end(); ++score_iter) {
+            const Annotation this_ann = score_iter.key();
+            ScoreInfo this_score = score_iter.value();
+            if (this_score.score <= threshold) {
+                s[this_ann] = this_score.new_label;
+            }
+
         }
 
         /*
