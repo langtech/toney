@@ -5,12 +5,21 @@
 
 #include "rinstance.h"
 
+#define NBEST 5
+
 /*Q Structure to hold info for building the matrix */
 struct AnnDataRow {
     QString label;
     const float *f0;
 };
 typedef struct AnnDataRow AnnDataRow;
+
+// For storing both the score and new label info
+struct ScoreInfo {
+    QString new_label;
+    float score;
+};
+typedef struct ScoreInfo ScoreInfo;
 
 /*
 static float sum_f0_samples(const Annotation &ann)
@@ -41,6 +50,25 @@ bool single_value(Rcpp::NumericVector v) {
         return false;
     }
     return true;
+}
+
+float prediction_score(Rcpp::NumericVector v) {
+    // Takes a predicted vector (unrounded), v
+    // Calculate how close it is to the rounded vector
+    int rounded;
+    float score = 0;
+    for (int i = 0; i < v.size(); ++i) {
+        rounded = floor(v[i]+0.5);
+        // just make sure we have only 0 and 1
+        if (rounded > 0) {
+            rounded = 1;
+        }
+        else {
+            rounded = 0;
+        }
+        score += (v[i] - rounded) * (v[i] - rounded);
+    }
+    return sqrt(score); // technically RMS should be 1/sqrt(v.size())*this, but v.size() always the same
 }
 
 static bool passed_threshold(float threshold, Rcpp::NumericVector res) {
@@ -227,6 +255,10 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
 
 
     // iterate through annotations and assign a cluster label to them */
+    
+    // to take care of the nbest
+    QList<float> scores;
+    QHash<const Annotation,ScoreInfo> new_labels;
 
     for (i = s.begin(); i != s.end(); ++i) {
         // take a single annotation, put it through the model
@@ -246,20 +278,39 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
         ans = (*RR).parseEval("new");
         Rcpp::NumericVector n(ans);
         std::cout << n[0] << " " << n[1] << std::endl;
+        float score =  prediction_score(n);
+        scores << score;
         int last_one = -1;
         for (int t_i = 0; t_i < n.size(); ++t_i) {
             // TODO: judge a score/threshold
+            // Round to the closest of 0 and 1
             n[t_i] = floor(n[t_i]+0.5);
             if (n[t_i] > 0) {
+                n[t_i] = 1; // make sure it's 1 and not 2 or 3 etc...
                 last_one = t_i;
+            }
+            else {
+                n[t_i] = 0; // just in case it's negative
             }
         }
         // if there's more than one predicted value, leave it alone
         // otherwise, assign to the single predicted value
         if (single_value(n)) {
 //            QString new_label = label_nos.key(last_one);
-            std::cout << "new label: " << label_nos.key(last_one).toStdString() << std::endl;
-            i.value() = label_nos.key(last_one);
+//            std::cout << "new label: " << label_nos.key(last_one).toStdString() << std::endl;
+//            i.value() = label_nos.key(last_one);
+            new_labels[ann] = {label_nos.key(last_one), score};
+        }
+
+
+        // Sort scores, find the 5th best score and relabel only the ones with scores less than or equal to that. (Or make sure we don't have less than 5.
+        qSort(scores.begin(), scores.end());
+        float threshold;
+        if (scores.size() > NBEST) {
+            threshold = scores[NBEST-1];
+        }
+        else {
+            threshold = scores[scores.size()-1];
         }
 
         /*
