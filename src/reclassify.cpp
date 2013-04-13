@@ -190,9 +190,20 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
 
     std::string rcommand;
 
+
+    // ugly to_string hack
+    std::ostringstream c_labels_size;
+    c_labels_size << c_labels.size();
+
+    std::ostringstream c_labels_size_plus_1;
+    c_labels_size_plus_1 << (c_labels.size()+1);
+
+    std::ostringstream k_cols_string;
+    k_cols_string << k_cols;
+
     rcommand = std::string("f0df = data.frame(tones=I(as.matrix(f0data[,1:") +
-               std::to_string(c_labels.size()) + "])), obs=I(as.matrix(f0data[," +
-               std::to_string(c_labels.size()+1) + ":" + std::to_string(k_cols) +
+               c_labels_size.str() + "])), obs=I(as.matrix(f0data[," +
+               c_labels_size_plus_1.str() + ":" + k_cols_string.str() +
                "])));";
     // print for debugging std::cout << rcommand << std::endl;
     (*R).parseEvalQ(rcommand);
@@ -234,7 +245,7 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
         // get the result back from R and parse it in C++
         ans = (*R).parseEval("new");
         Rcpp::NumericVector n(ans);
-        std::cout << std::to_string(n[0]) << " " << std::to_string(n[1]) << std::endl;
+        std::cout << n[0] << " " << n[1] << std::endl;
         int last_one = -1;
         for (int t_i = 0; t_i < n.size(); ++t_i) {
             // TODO: judge a score/threshold
