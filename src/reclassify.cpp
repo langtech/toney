@@ -184,8 +184,8 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     }
 
     // convert to an R data frame
-    (*R)["f0data_t"] = K;
-    (*R).parseEvalQ("f0data = t(f0data_t);");
+    (*RR)["f0data_t"] = K;
+    (*RR).parseEvalQ("f0data = t(f0data_t);");
     // TODO strip zero rows
 
     std::string rcommand;
@@ -195,13 +195,13 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
                std::to_string(c_labels.size()+1) + ":" + std::to_string(k_cols) +
                "])));";
     // print for debugging std::cout << rcommand << std::endl;
-    (*R).parseEvalQ(rcommand);
+    (*RR).parseEvalQ(rcommand);
 
-    (*R).parseEvalQ("print(f0df);");
+    (*RR).parseEvalQ("print(f0df);");
 
     // train a model
     rcommand = "library(\"pls\");";
-    (*R).parseEvalQ(rcommand);
+    (*RR).parseEvalQ(rcommand);
     
     // CV uses 10 by default, so breaks if there are fewer than 10 observations;
     // change it to LOO in that case
@@ -211,8 +211,8 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     else {
         rcommand = "model=plsr(tones~obs, data=f0df, validation=\"LOO\");";
     }
-    (*R).parseEvalQ(rcommand);
-    (*R).parseEvalQ("print(\"built model\");");
+    (*RR).parseEvalQ(rcommand);
+    (*RR).parseEvalQ("print(\"built model\");");
 
 
     // iterate through annotations and assign a cluster label to them */
@@ -225,14 +225,14 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
         for (int r_i = 0; r_i < Annotation::NUM_F0_SAMPLES; ++r_i) {
             A[r_i] = r_f0[r_i];
         }
-        (*R)["newrow"] = A;
-        (*R).parseEvalQ("print(newrow);");
+        (*RR)["newrow"] = A;
+        (*RR).parseEvalQ("print(newrow);");
         rcommand = "new = predict(model, ncomp=model$ncomp, newdata=newrow);";
-        (*R).parseEvalQ(rcommand);
-        (*R).parseEvalQ("print(new);");
+        (*RR).parseEvalQ(rcommand);
+        (*RR).parseEvalQ("print(new);");
 
         // get the result back from R and parse it in C++
-        ans = (*R).parseEval("new");
+        ans = (*RR).parseEval("new");
         Rcpp::NumericVector n(ans);
         std::cout << std::to_string(n[0]) << " " << std::to_string(n[1]) << std::endl;
         int last_one = -1;
