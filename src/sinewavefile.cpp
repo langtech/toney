@@ -99,7 +99,7 @@ void SineWaveFile::_setFormat()
     _format.setSampleRate(_samplerate);
     _format.setSampleSize(sizeof(short) * 8);
     _format.setSampleType(QAudioFormat::SignedInt);
-    _format.setChannels(1);
+    _format.setChannelCount(1);
     _format.setCodec("audio/pcm");
 
     QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());

@@ -2,6 +2,7 @@
 #define F0CONTOUR_H
 
 #include <QtGui>
+#include <QtWidgets>
 #include <annotation.h>
 
 class F0Contour : public QGraphicsPathItem

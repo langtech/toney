@@ -33,7 +33,7 @@ bool AudioFile::open(const QString &path)
     _format.setSampleRate(_sfinfo.samplerate);
     _format.setSampleSize(sizeof(short) * 8);
     _format.setSampleType(QAudioFormat::SignedInt);
-    _format.setChannels(_sfinfo.channels);
+    _format.setChannelCount(_sfinfo.channels);
     _format.setCodec("audio/pcm");
 
     if (_format.isValid() == false) {

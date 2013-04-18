@@ -17,7 +17,7 @@ F0Contour::F0Contour(const Annotation &ann, QGraphicsItem *parent) :
     _pen_hover.setCosmetic(true);
     _pen_hover.setWidth(5);
     _pen_hover.setCapStyle(Qt::RoundCap);
-    setAcceptsHoverEvents(true);
+    setAcceptHoverEvents(true);
     _redraw();
 }
 

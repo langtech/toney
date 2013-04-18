@@ -145,7 +145,7 @@ void Pool::mouseMoveEvent(QMouseEvent *event)
     }
 
     QPointF p = mapToScene(event->pos());
-    _drag_item = dynamic_cast<Item*>(_scene.itemAt(p));
+    _drag_item = dynamic_cast<Item*>(_scene.itemAt(p, QTransform::fromScale(1.0, 1.0)));
     if (_drag_item != 0) {
         _drag_item->hide();
 

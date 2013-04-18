@@ -2,6 +2,7 @@
 #define ITEM_H
 
 #include <QtGui>
+#include <QtWidgets>
 #include <QSound>
 #include <annotation.h>
 

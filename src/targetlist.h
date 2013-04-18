@@ -2,6 +2,7 @@
 #define TARGETLIST_H
 
 #include <QtGui>
+#include <QtWidgets>
 #include <annotation.h>
 
 /// TargetList is a display widget for target labels.
