@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include "annotation.h"
 #include "toney_utils.h"
 #include "RInside.h"
@@ -102,6 +104,7 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     SEXP ans;
 
     //const float threshold = 0.5; // Threshold for scoring; want the score to be under this threshold
+    const float threshold = 0.25; // threshold for min difference
 
     QHash<QString,float> cluster_mean;
     QHash<QString,int> cluster_num_samples;
@@ -147,9 +150,21 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     QHash<const Annotation,QString>::iterator i = s.begin();
     QList<AnnDataRow> data_rows;
     QSet<QString> c_labels; // for storing the cluster labels
+    
+    // this is for dumping the f0 values to a file - TODO take it out when I don't need it
+    std::ofstream f0file("f0file.f0");
+    //f0file.open("f0file.f0");
 
     for (; i != s.end(); ++i) {
         const Annotation ann = i.key();
+
+        // chuck the f0 values into a file 
+        const float *f0values = ann.getF0();
+        for (int j = 0; j < Annotation::NUM_F0_SAMPLES; j++) {
+            f0file << f0values[j] << " ";
+        }
+        f0file << ann.getTargetLabel().toStdString() << " " << ann.getValue(pos).toStdString() << std::endl;
+
 
         // See annotation.h for methods of Annotation class.
         // ann.getAudioPath()    -- path to the source audio file
@@ -161,10 +176,16 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
         QString cluster = ann.getValue(pos);
         if (cluster != "") { /* ignore unclustered values */
             AnnDataRow new_row = {cluster, ann.getF0()}; // TODO This isn't very nice
+            
+            //debuggerising
+            std::cout << "current cluster = " << cluster.toStdString() << ", label = " << ann.getTargetLabel().toStdString() << std::endl;
+
             data_rows.push_back(new_row);
             c_labels.insert(cluster);
         }
     }
+
+    f0file.close();
 
     /*Q
     // debug: print out the data rows
@@ -180,13 +201,17 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     QSet<QString>::iterator label_iter = c_labels.begin();
     for (; label_iter != c_labels.end(); ++label_iter) {
         label_nos.insert(*label_iter, label_i);
+
+        // debuggerising
+        std::cout << "cluster label: " << (*label_iter).toStdString() << ", label number: " << label_i << std::endl;
+
         label_i++;
     }
 
     /*Q Convert data_rows QList into a NumericMatrix suitable to put into R */
     /* Because of the way matrix filling works, need to make the transpose */
     int k_rows = data_rows.size();
-    int k_cols = c_labels.size() + Annotation::NUM_F0_SAMPLES;
+    int k_cols = Annotation::NUM_F0_SAMPLES + 1;
     Rcpp::NumericMatrix K(k_cols, k_rows); // transpose
 
     // int k_size = k_rows * k_cols;
@@ -195,16 +220,9 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     QList<AnnDataRow>::iterator d_i = data_rows.begin();
     for (; d_i != data_rows.end(); ++d_i) {
         // Put each data row into a column of the transposed matrix
-        for (int c_i = 0; c_i < c_labels.size(); ++c_i) {
-            // Figure out which column to fill for cluster label
-            if (label_nos.value((*d_i).label) == c_i) {
-                K[kk] = 1;
-            }
-            else {
-                K[kk] = 0;
-            }
-            kk++;
-        }
+        //K[kk] = label_nos.value((*d_i).label) + 1; // need the +1 because R goes from 1
+        K[kk] = label_nos.value((*d_i).label);
+        kk++;
         for (int f0_i = 0; f0_i < Annotation::NUM_F0_SAMPLES; ++f0_i) {
             K[kk] = (*d_i).f0[f0_i];
             kk++;
@@ -214,7 +232,7 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     // convert to an R data frame
     (*RR)["f0data_t"] = K;
     (*RR).parseEvalQ("f0data = t(f0data_t);");
-    // TODO strip zero rows
+    // TODO strip zero rows, or smooth them using splines
 
     std::string rcommand;
 
@@ -229,27 +247,27 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     std::ostringstream k_cols_string;
     k_cols_string << k_cols;
 
-    rcommand = std::string("f0df = data.frame(tones=I(as.matrix(f0data[,1:") +
-               c_labels_size.str() + "])), obs=I(as.matrix(f0data[," +
-               c_labels_size_plus_1.str() + ":" + k_cols_string.str() +
-               "])));";
+    /*
+    rcommand = std::string("f0df = data.frame(tones=I(as.matrix(f0data[,1])), obs=I(as.matrix(f0data[,2:" +
+               k_cols_string.str() + "])));";
     // print for debugging std::cout << rcommand << std::endl;
     (*RR).parseEvalQ(rcommand);
 
     (*RR).parseEvalQ("print(f0df);");
+    */
+
+    // Take X and Y matrices from the data
+    rcommand = std::string("Y = as.vector(f0data[,1]);"
+                           "X = as.matrix(f0data[,2:" + k_cols_string.str() + "]);");
+    (*RR).parseEvalQ(rcommand);
+
 
     // train a model
-    rcommand = "library(\"pls\");";
+    // load mixOmics library
+    rcommand = "library(\"mixOmics\");";
     (*RR).parseEvalQ(rcommand);
     
-    // CV uses 10 by default, so breaks if there are fewer than 10 observations;
-    // change it to LOO in that case
-    if (k_rows >= 10) {
-        rcommand = "model=plsr(tones~obs, data=f0df, validation=\"CV\");";
-    }
-    else {
-        rcommand = "model=plsr(tones~obs, data=f0df, validation=\"LOO\");";
-    }
+    rcommand = "model.pls = splsda(X, Y, ncomp=3);"; // TODO: make the ncomp settable
     (*RR).parseEvalQ(rcommand);
     (*RR).parseEvalQ("print(\"built model\");");
 
@@ -269,12 +287,39 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
             A[r_i] = r_f0[r_i];
         }
         (*RR)["newrow"] = A;
-        (*RR).parseEvalQ("print(newrow);");
-        rcommand = "new = predict(model, ncomp=model$ncomp, newdata=newrow);";
+        //(*RR).parseEvalQ("print(newrow);");
+        rcommand = "new.result = predict(model.pls, newrow);";
         (*RR).parseEvalQ(rcommand);
-        (*RR).parseEvalQ("print(new);");
+        //(*RR).parseEvalQ("print(new.result);");
+     
+        //debuggerising: print the actual values from prediction
+        (*RR).parseEvalQ("print(new.result$predict[1,,3]);");
 
-        // get the result back from R and parse it in C++
+        // get the results wanted back from R and parse it in C++
+        rcommand = "class = new.result$class$max.dist[,3];"
+                   "predicted_value = new.result$predict[1,class,3];"
+                   "other_values = new.result$predict[1,-class,3];"
+                   "min_difference = min(abs(predicted_value - other_values));";
+        (*RR).parseEvalQ(rcommand);
+        Rcpp::IntegerVector new_class_v = (*RR).parseEval("class");
+        Rcpp::NumericVector min_diff_v = (*RR).parseEval("min_difference");
+        int new_class = new_class_v[0];
+        float min_diff = min_diff_v[0];
+        // debuggerising: print out the current label if there is one
+        if (ann.getValue(pos) != "") {
+            std::cout << "current label is " << ann.getValue(pos).toStdString() << std::endl;
+        }
+        else {
+            std::cout << "no current label" << std::endl;
+        }
+        // debuggerising: print out the predicted label
+        std::cout << "predicted label number is " << new_class << ", label associated is " << label_nos.key(new_class-1).toStdString() << std::endl;
+        // if the min difference is greater than the threshold, reassign label
+        if (min_diff > threshold) {
+            QString new_label = label_nos.key(new_class-1); // -1 to allow for different indexing in C++ and R
+            i.value() = new_label;
+        }
+        /*
         ans = (*RR).parseEval("new");
         Rcpp::NumericVector n(ans);
         std::cout << n[0] << " " << n[1] << std::endl;
@@ -326,6 +371,7 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
             }
 
         }
+        */
 
         /*
         for (; c != cluster_mean.end(); ++c) {
