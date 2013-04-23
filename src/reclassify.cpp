@@ -163,7 +163,8 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
         for (int j = 0; j < Annotation::NUM_F0_SAMPLES; j++) {
             f0file << f0values[j] << " ";
         }
-        f0file << ann.getTargetLabel().toStdString() << " " << ann.getValue(pos).toStdString() << std::endl;
+        //f0file << ann.getTargetLabel().toStdString() << " " << ann.getValue(pos).toStdString() << std::endl;
+        f0file << ann.getTargetLabel().toStdString() << " " << ann.getValue(pos).toStdString() << " " << ann.getValue(pos+1).toStdString() << " " << ann.getValue(pos+2).toStdString() << std::endl;
 
 
         // See annotation.h for methods of Annotation class.
@@ -256,9 +257,34 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
     (*RR).parseEvalQ("print(f0df);");
     */
 
+    // randomly sample an equal number from each of the tones
+    /*
+     *
+     * # get the minimum number of tokens for any tone
+     * min_all <- min(table(f0data[,1]))
+     * # now sample min_all from each tone
+     * # have to turn the f0data into a dataframe first
+     * f0data_df <- data.frame(f0data)
+     * # tone will be X1, the first variable
+     * rndid <- with(f0data_df, ave(X1, X1, FUN=function(x) {sample.int(length(x))}))
+     * # now restrict it
+     * f0data_df <- f0data_df[rndid<=min_all,]
+     * # from http://stackoverflow.com/questions/23831711/selecting-n-random-rows-across-all-levels-of-a-factor-within-a-dataframe?lq=1
+     *
+     * */
+
+    rcommand = std::string("min_all <- min(table(f0data[,1]));"
+                           "f0data_df <- data.frame(f0data);"
+                           "rndid <- with(f0data_df, ave(X1, X1, FUN=function(x) {sample.int(length(x))}));"
+                           "f0data_df <- f0data_df[rndid<=min_all,];");
+    (*RR).parseEvalQ(rcommand);
+
     // Take X and Y matrices from the data
-    rcommand = std::string("Y = as.vector(f0data[,1]);"
+/*    rcommand = std::string("Y = as.vector(f0data[,1]);"
                            "X = as.matrix(f0data[,2:" + k_cols_string.str() + "]);");
+                           */
+    rcommand = std::string("Y = as.vector(f0data_df[,1]);"
+                           "X = as.matrix(f0data_df[,2:" + k_cols_string.str() + "]);");
     (*RR).parseEvalQ(rcommand);
 
 
