@@ -271,7 +271,7 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
      * f0data_df <- f0data_df[rndid<=min_all,]
      * # from http://stackoverflow.com/questions/23831711/selecting-n-random-rows-across-all-levels-of-a-factor-within-a-dataframe?lq=1
      *
-     * */
+     */
 
     rcommand = std::string("min_all <- min(table(f0data[,1]));"
                            "f0data_df <- data.frame(f0data);"
