@@ -1,4 +1,3 @@
-#include <iostream>
 #include "audiofile.h"
 #include "player.h"
 
@@ -28,7 +27,6 @@ bool AudioFile::open(const QString &path)
     _sndfile = sf_open(p, SFM_READ, &_sfinfo);
     if (_sndfile == 0) {
         _last_error_msg.fromUtf8(sf_strerror(_sndfile));
-        std::cout << "error 1" << std::endl;
         return false;
     }
 
@@ -41,7 +39,6 @@ bool AudioFile::open(const QString &path)
     if (_format.isValid() == false) {
         sf_close(_sndfile);
         _sndfile = 0;
-        std::cout << "error 2" << std::endl;
         return false;
     }
 
