@@ -1,9 +1,12 @@
 #include <fstream>
 
+#include <RInside.h>
+#include <Rcpp.h>
+
 #include "annotation.h"
 #include "toney_utils.h"
-#include "RInside.h"
-#include "Rcpp.h"
+/*#include "RInside.h"
+#include "Rcpp.h"*/
 
 #include "rinstance.h"
 

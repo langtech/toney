@@ -1,7 +1,9 @@
 #include <QtGui/QApplication>
+#include <RInside.h>
+#include <Rcpp.h>
 #include "mainwindow.h"
-#include "RInside.h"
-#include "Rcpp.h"
+/*#include "RInside.h"
+#include "Rcpp.h"*/
 
 #include "rinstance.h"
 
