@@ -76,6 +76,7 @@ float prediction_score(Rcpp::NumericVector v) {
     return sqrt(score); // technically RMS should be 1/sqrt(v.size())*this, but v.size() always the same
 }
 
+/*
 static bool passed_threshold(float threshold, Rcpp::NumericVector res) {
     // Score how close res is to the rounded result and return whether it passed the threshold
     float score = 0.0;
@@ -96,6 +97,7 @@ static bool passed_threshold(float threshold, Rcpp::NumericVector res) {
     }
     return false;
 }
+*/
 
 // Param s: A hash of Annotations. The values are empty string. The reclassify
 //   function should update the values to an appropriate cluster label.
@@ -104,7 +106,7 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
 {
 
     /* R session is already open and named R, from rinstance.h */
-    SEXP ans;
+    //SEXP ans;
 
     //const float threshold = 0.5; // Threshold for scoring; want the score to be under this threshold
     const float threshold = 0.25; // threshold for min difference
@@ -185,7 +187,7 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
                 AnnDataRow new_row = {cluster, ann.getF0()}; // TODO This isn't very nice
                 
                 //debuggerising
-                std::cout << "current cluster = " << cluster.toStdString() << ", label = " << ann.getTargetLabel().toStdString() << std::endl;
+                //std::cout << "current cluster = " << cluster.toStdString() << ", label = " << ann.getTargetLabel().toStdString() << std::endl;
 
                 data_rows.push_back(new_row);
                 c_labels.insert(cluster);
@@ -210,7 +212,7 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
             label_nos.insert(*label_iter, label_i);
 
             // debuggerising
-            std::cout << "cluster label: " << (*label_iter).toStdString() << ", label number: " << label_i << std::endl;
+            //std::cout << "cluster label: " << (*label_iter).toStdString() << ", label number: " << label_i << std::endl;
 
             label_i++;
         }
@@ -301,7 +303,7 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
         
         rcommand = "model.pls = splsda(X, Y, ncomp=3);"; // TODO: make the ncomp settable
         (*RR).parseEvalQ(rcommand);
-        (*RR).parseEvalQ("print(\"built model\");");
+        //(*RR).parseEvalQ("print(\"built model\");");
 
 
         // iterate through annotations and assign a cluster label to them */
@@ -338,14 +340,16 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
             int new_class = new_class_v[0];
             float min_diff = min_diff_v[0];
             // debuggerising: print out the current label if there is one
+            /*
             if (ann.getValue(pos) != "") {
                 std::cout << "current label is " << ann.getValue(pos).toStdString() << std::endl;
             }
             else {
                 std::cout << "no current label" << std::endl;
             }
+            */
             // debuggerising: print out the predicted label
-            std::cout << "predicted label number is " << new_class << ", label associated is " << label_nos.key(new_class-1).toStdString() << std::endl;
+            //std::cout << "predicted label number is " << new_class << ", label associated is " << label_nos.key(new_class-1).toStdString() << std::endl;
             // if the min difference is greater than the threshold, reassign label
             if (min_diff > threshold) {
                 QString new_label = label_nos.key(new_class-1); // -1 to allow for different indexing in C++ and R
