@@ -97,6 +97,9 @@ QMAKE_LFLAGS +=     $$RLDFLAGS $$RBLAS $$RLAPACK $$RCPPLIBS $$RINSIDELIBS
 # shouldn't need this now
 # QMAKE_CXXFLAGS +=   -std=c++0x
 
+# debugging
+# QMAKE_CXXFLAGS += -g -O0
+
 unix {
     LIBS += -lsndfile
     #SOURCES += soxplayer.cpp

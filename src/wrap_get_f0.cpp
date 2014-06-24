@@ -5,6 +5,8 @@
 #include <cmath>
 #include <QDebug>
 
+#include <iostream>
+
 static void callback(
         float *f0p,
         float *vuvp,
@@ -28,9 +30,19 @@ static void linear_interpolation(QVector<float> &f0_samples,
                                  float duration,
                                  float step)
 {
+
+    std::cout << "linear_interpolation mammoth" << std::endl;
+
     static const float E = 0.000001;
 
     int N = f0_samples.size();
+
+    std::cout << "N = " << N << std::endl;
+    std::cout << "Values: ";
+    for (int j = 0; j < N; j++) {
+        std::cout << f0_samples.at(j) << " ";
+    }
+    std::cout << std::endl;
 
     if (N == 0)
         return;
@@ -42,22 +54,36 @@ static void linear_interpolation(QVector<float> &f0_samples,
 
     QVector<float> input(f0_samples);
     i = (int) floor(start / step);
+    std::cout << "first i = " << i << std::endl;
     tmp_val = f0_samples.value(i, 0.0);
+    std::cout << "tmp_val = " << tmp_val << std::endl;
     while (i >= 0)
         input[i--] = tmp_val;
     i = (int) floor((start + duration) / step);
+    std::cout << "second i = " << i << std::endl;
     tmp_val = f0_samples.value(i, 0.0);
+    std::cout << "tmp_val = " << tmp_val << std::endl;
     while (i < f0_samples.size())
         input[i++] = tmp_val;
 
+    std::cout << "tmp_val adjusted: ";
+    for (int j = 0; j < N; j++) {
+        std::cout << input[j] << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Skip over zeros" << std::endl;
     for (i=0; i < N && input.at(i) < E; ++i);
+    std::cout << "i = " << i << std::endl;
 
     if (i < N) {
         tmp_val = input.at(i);
+        std::cout << "pushing back i instances of tmp_val = " << tmp_val << std::endl;
         for (int k=0; k < i; ++k)
             output.push_back(tmp_val);
     }
     else {
+        std::cout << "all zeros" << std::endl;
         for (int k=0; k < N; ++k)
             output.push_back(0.0);
         return;
@@ -68,6 +94,7 @@ static void linear_interpolation(QVector<float> &f0_samples,
             int x1 = i - 1;
             int x2 = i + 1;
             while (x2 < N && input.at(x2) < E) ++x2;
+            std::cout << "Interpolating between " << x1 << " and " << x2 << std::endl;
             if (x2 < N) {
                 float v1 = input.at(x1);
                 float v2 = input.at(x2);
@@ -88,6 +115,14 @@ static void linear_interpolation(QVector<float> &f0_samples,
             output.push_back(input.at(i++));
         }
     }
+
+    std::cout << "Output size = " << output.size() << std::endl;
+    std::cout << "Output values: ";
+    for (int j = 0; j < output.size(); j++) {
+        std::cout << output.at(j) << " ";
+    }
+    std::cout << std::endl;
+
 }
 
 static void filter(int order, float *b, float *a,
@@ -122,6 +157,8 @@ static void smooth(QVector<float> &f0_samples,
     //
     // The f0 samples have been padded in the front and at the end. offset and
     // duration indicates where the main samples are.
+    
+    std::cout << "smooth aardvark" << std::endl;
 
     static float B[4] = {0.002898195, 0.008694584, 0.008694584, 0.002898195};
     static float A[4] = {1.0000000, -2.3740947, 1.9293557, -0.5320754};
@@ -141,6 +178,16 @@ static void smooth(QVector<float> &f0_samples,
     for (int i=0; i < N; ++i) {
         output[i] = input.at(i);
     }
+
+    std::cout << "Smoothing output size = " << output.size() << std::endl;
+    std::cout << "Smoothing output values: ";
+    for (int j = 0; j < output.size(); j++) {
+        std::cout << output.at(j) << " ";
+    }
+    std::cout << std::endl;
+
+
+
 }
 
 bool get_f0_samples(
@@ -187,6 +234,11 @@ bool get_f0_samples(
     QVector<float> f0_samples;
     QVector<float> smoothed;
     get_f0(audio, f0_session, beg, end, callback, &v);
+    std::cout << "v: " << std::endl;
+    for (int z = 0; z < v.size(); z++) {
+        std::cout << v.at(z) << " ";
+    }
+    std::cout << std::endl;
     for (int i=0; i<v.size(); i+=2)
         f0_samples.push_back(v.at(i));
     smooth(f0_samples,
@@ -226,6 +278,7 @@ bool get_f0_samples(
         }
         double y;
 
+        /*
         if (vp1 < 0.5) {
             // x1 unvoiced
             if (vp2 < 0.5) {
@@ -284,6 +337,13 @@ bool get_f0_samples(
                 y = (y2 - y1) / (x2 - x1) * (x - x1) + y1;
             }
         }
+        */
+        
+        // interpolate with x1 and x2 (always, regardless of voicing)
+        double y1 = v.at(i1);
+        double y2 = v.at(i2);
+        y = (y2 - y1) / (x2 - x1) * (x - x1) + y1;
+
         result[i] = (float) y;
     }
 
