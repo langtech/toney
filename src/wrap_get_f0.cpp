@@ -53,6 +53,8 @@ static void linear_interpolation(QVector<float> &f0_samples,
     output.clear();
 
     QVector<float> input(f0_samples);
+
+    /*
     i = (int) floor(start / step);
     std::cout << "first i = " << i << std::endl;
     tmp_val = f0_samples.value(i, 0.0);
@@ -65,6 +67,23 @@ static void linear_interpolation(QVector<float> &f0_samples,
     std::cout << "tmp_val = " << tmp_val << std::endl;
     while (i < f0_samples.size())
         input[i++] = tmp_val;
+    */
+
+    /* Instead of extending out the ends of the segment, find the first and
+     * last non-zero values and extend using those instead
+     * */
+    for (i = 0; i < N && input.at(i) < E; ++i);
+    // i is at the first non-zero value
+    tmp_val = f0_samples.value(i, 0.0);
+    while (i >= 0) {
+        input[i--] = tmp_val;
+    }
+    // do the same for the end
+    for (i = f0_samples.size() - 1; i >= 0 && input.at(i) < E; --i);
+    tmp_val = f0_samples.value(i, 0.0);
+    while (i < f0_samples.size()) {
+        input[i++] = tmp_val;
+    }
 
     std::cout << "tmp_val adjusted: ";
     for (int j = 0; j < N; j++) {
@@ -88,6 +107,7 @@ static void linear_interpolation(QVector<float> &f0_samples,
             output.push_back(0.0);
         return;
     }
+
 
     while (i < N) {
         if (input.at(i) < E) {
