@@ -172,7 +172,7 @@ void reclassify(QHash<const Annotation,QString> &s, int pos)
                 f0file << f0values[j] << " ";
             }
             //f0file << ann.getTargetLabel().toStdString() << " " << ann.getValue(pos).toStdString() << std::endl;
-            f0file << ann.getTargetLabel().toStdString() << " " << ann.getValue(pos).toStdString() << " " << ann.getValue(pos+1).toStdString() << " " << ann.getValue(pos+2).toStdString() << std::endl;
+            f0file << ann.getTargetLabel().toStdString() << " " << ann.getValue(pos).toStdString() << " " << ann.getValue(pos+1).toStdString() << " " << ann.getValue(pos+2).toStdString() << " " << ann.getValue(pos+3).toStdString() << std::endl;
 
 
             // See annotation.h for methods of Annotation class.

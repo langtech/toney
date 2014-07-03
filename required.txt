@@ -1,0 +1,7 @@
+Need to install Rcpp/RInside:
+
+- install R
+- inside R:
+    > install.packages(c("Rcpp", "RInside", "inline"))
+
+- may need to modify src/Toney.pro with R paths depending on system
